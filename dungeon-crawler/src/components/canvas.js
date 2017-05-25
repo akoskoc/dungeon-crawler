@@ -16,4 +16,4 @@ function mapStateToProps(state) {
 }
 
 
-export default CanvasComponent
+export default connect(mapStateToProps)(CanvasComponent)
