@@ -1,13 +1,30 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { Provider } from "react-redux"
+import { createStore } from "redux"
+import './index.css'
+
+
+/* Reducer */
+import reducer from "./reducers/reducers"
+
+/* Components */
+import CanvasComponent from "./components/canvas"
+
+const store = createStore(reducer);
+
 
 class App extends React.Component {
     render() {
         return(
-            <canvas></canvas>
+            <CanvasComponent />
         )
     }
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(
+    <Provider store={store}>
+        <App />
+    </Provider>,
+    document.getElementById('root')
+);
