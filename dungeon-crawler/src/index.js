@@ -6,7 +6,7 @@ import './styles/main.css'
 
 
 /* Reducer */
-import reducer from "./reducers/reducers"
+import reducer from "./reducers/combineReducers"
 
 /* Components */
 import CanvasComponent from "./components/canvas"
