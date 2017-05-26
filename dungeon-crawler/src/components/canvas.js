@@ -10,8 +10,7 @@ class CanvasComponent extends React.Component {
 
         canvas.height = this.props.game.viewSize
         canvas.width = this.props.game.viewSize
-
-        /* For chrome, upload images on the internet, or try different approach, google it. dirt: https://image.ibb.co/eR80Ca/dirt.png*/
+        
         var dirt = new Image();
         dirt.src = "./img/dirt.png"
 
@@ -39,17 +38,20 @@ class CanvasComponent extends React.Component {
         var bat = new Image()
         bat.src = "./img/bat.png"
 
-        for (var i = 0; i < 20; i += 1) {
-            for (var k = 0; k < 20; k += 1) {
-                c.drawImage(dirt, i * 16 + 16, k * 16 + 16)
+        /* Wait for the images to load */
+        window.onload = () => {
+            for (var i = 0; i < 20; i += 1) {
+                for (var k = 0; k < 20; k += 1) {
+                    c.drawImage(dirt, i * 16 + 16, k * 16 + 16)
 
+                }
             }
+
+            c.drawImage(skeleton, 50, 50)
+
+            c.drawImage(bat, 100, 50)
+            c.drawImage(chest, 100, 100)
         }
-
-        c.drawImage(skeleton, 50, 50)
-
-        c.drawImage(bat, 100, 50)
-        c.drawImage(chest, 100, 100)
 
 
 

@@ -34,7 +34,7 @@ const data = {
         attack: 4-6,
         epicItems: {
             plateArmor: {
-                effect: "20% damage reduction"
+                effect: "20% damage reduction",
                 slot: "chest"
             },
             leatherArmor: {
@@ -64,7 +64,7 @@ const data = {
             poisionEnchantment: {
                 effect: "reduce the damage your enemy deals to you by 20%",
                 slot: "enchantment"
-            }    
+            }
         }
     }
 }
