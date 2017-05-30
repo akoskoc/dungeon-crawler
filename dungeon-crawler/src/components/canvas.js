@@ -4,16 +4,12 @@ import { bindActionCreators } from "redux"
 
 /* Action creators */
 import setGameState from "./../actions/setGameState"
+import playerRound from "./../actions/playerRound"
 
 class CanvasComponent extends React.Component {
-    componentDidMount() {
-        var canvas = this.refs.canvas
-        var c = canvas.getContext("2d")
 
-        /* Canvas size */
-        canvas.height = this.props.game.size
-        canvas.width = this.props.game.size
-
+    constructor(props) {
+        super(props)
         /* Sprites */
         var dirt = new Image();
         dirt.src = "./img/dirt.png"
@@ -21,8 +17,8 @@ class CanvasComponent extends React.Component {
         var floor = new Image()
         floor.src = "./img/floor.png"
 
-        var char = new Image()
-        char.src = "./img/char.png"
+        var player = new Image()
+        player.src = "./img/player.png"
 
         var skeleton = new Image()
         skeleton.src = "./img/skeleton.png"
@@ -54,6 +50,47 @@ class CanvasComponent extends React.Component {
         var finalboss = new Image()
         finalboss.src = "./img/finalboss.png"
 
+        this.state = {
+            sprites: {
+                dirt,
+                floor,
+                player,
+                skeleton,
+                potion,
+                torch,
+                wall,
+                chest,
+                bat,
+                portal,
+                door,
+                miniboss,
+                finalboss
+            }
+        }
+    }
+
+
+    componentDidMount() {
+        var canvas = this.refs.canvas
+        var c = canvas.getContext("2d")
+        var dirt = this.state.sprites.dirt,
+            floor = this.state.sprites.floor,
+            player = this.state.sprites.player,
+            skeleton = this.state.sprites.skeleton,
+            potion = this.state.sprites.potion,
+            torch = this.state.sprites.torch,
+            wall = this.state.sprites.wall,
+            chest = this.state.sprites.chest,
+            bat = this.state.sprites.bat,
+            portal = this.state.sprites.portal,
+            door = this.state.sprites.door,
+            miniboss = this.state.sprites.miniboss,
+            finalboss = this.state.sprites.finalboss
+
+        /* Canvas size */
+        canvas.height = this.props.game.size
+        canvas.width = this.props.game.size
+
         /* Wait for the images to load */
         window.onload = () => {
 
@@ -67,6 +104,8 @@ class CanvasComponent extends React.Component {
                 0)
             var initGameState = []
 
+
+            /* Need to redraw, make all arrow keys functional*/
 
             /* Display map */
             this.props.maps.level1.forEach((row, y) => {
@@ -130,20 +169,75 @@ class CanvasComponent extends React.Component {
                         case "finalboss":
                             c.drawImage(finalboss, 16 * x, 16 * y)
                             break
+                        case "player":
+                            c.drawImage(player, 16 * x, 16 * y)
+                            break
                         }
                 })
+            })
+
+            /* Key event listener + update state */
+            canvas.addEventListener("keydown", (event) => {
+                if (event.key === "ArrowUp"
+                    || event.key === "ArrowDown"
+                    || event.key === "ArrowLeft"
+                    || event.key === "ArrowRight") {
+                        this.props.playerRound(event.key)
+                    }
             })
 
             /* Init game state */
             this.props.setGameState(initGameState)
         }
+    }
+
+
+    componentDidUpdate() {
+        var canvas = this.refs.canvas
+        var c = canvas.getContext("2d")
+        var player = this.state.sprites.player,
+            skeleton = this.state.sprites.skeleton,
+            potion = this.state.sprites.potion,
+            chest = this.state.sprites.chest,
+            bat = this.state.sprites.bat,
+            miniboss = this.state.sprites.miniboss,
+            finalboss = this.state.sprites.finalboss
+
+        this.props.game.gameState.forEach((row, y) => {
+            row.forEach((item, x) => {
+                switch(item) {
+                    case "skeletons":
+                        c.drawImage(skeleton, 16 * x, 16 * y)
+                        break
+                    case "bats":
+                        c.drawImage(bat, 16 * x, 16 * y)
+                        break
+                    case "potions":
+                        c.drawImage(potion, 16 * x, 16 * y)
+                        break
+                    case "chests":
+                        c.drawImage(chest, 16 * x, 16 * y)
+                        break
+                    case "miniboss":
+                        c.drawImage(miniboss, 16 * x, 16 * y)
+                        break
+                    case "finalboss":
+                        c.drawImage(finalboss, 16 * x, 16 * y)
+                        break
+                    case "player":
+                        c.drawImage(player, 16 * x, 16 * y)
+                        break
+                    }
+            })
+        })
+    }
 
 
     /* Render */
-    }
     render() {
+        console.log(this.props.game)
         return(
-            <canvas ref="canvas"></canvas>
+            <canvas ref="canvas" tabIndex="1"></canvas>
         )
     }
 }
@@ -154,7 +248,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
-        setGameState
+        setGameState,
+        playerRound
     }, dispatch)
 }
 
@@ -191,5 +286,11 @@ function placeObjects(gameState, population) {
             emptyPlace = emptyPlace.filter((item) => item !== emptyPlace[num])
         }
     }
+
+    /* Place player */
+    num = Math.floor(Math.random() * emptyPlace.length)
+    gameState[emptyPlace[num].y][emptyPlace[num].x] = "player"
+
+
     return gameState
 }
