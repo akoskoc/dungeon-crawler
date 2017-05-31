@@ -6,38 +6,46 @@ const data = {
     game: {
         size: 400,
         gameState: [],
-        skeletons: 3,
-        bats: 8,
-        chests: 4,
-        potions: 7,
-        level: 0,
-        player: {
-            maxHealth: 100,
-            currentHealth: 100,
+        skeleton: {
+            health: 60,
             attack: 8-12,
-            vision: 5,
-            vitality: 0,
-            strength: 0,
-            agility: 0,
-            speed: 1
+            number: 3
+        },
+        bat: {
+            health: 40,
+            attack: 6-8,
+            number:8
+        },
+        chest: {
+            items: [
+                "vitality",
+                "strength",
+                "agility",
+                "weapon": [
+                    10,
+                    15,
+                    20,
+                    25
+                ]
+            ],
+            number:4
         },
         potion: {
-            restore: 40
+            restore: 40,
+            number:7
+        },
+        level: 1,
+        player: {
+            maxHealth: 100,
+            currentHealth: 50,
+            attackLow: 0,
+            attackHigh: 2,
+            currentWeapon: 0,
+            vision: 4,
+            vitality: 0,
+            strength: 0,
+            agility: 0
         }
-    },
-    skeleton: {
-        health: 60,
-        attack: 8-12
-    },
-    bat: {
-        health: 40,
-        attack: 6-8
-    },
-    chest: {
-        vitality: 1,
-        strength: 1,
-        agility: 1,
-        attack: 4-6,
     },
     epicItems,
     maps,

@@ -80,10 +80,10 @@ class CanvasComponent extends React.Component {
         if (init) {
             var initGameState = [],
                 population = new Population(
-                    this.props.game.skeletons,
-                    this.props.game.bats,
-                    this.props.game.potions,
-                    this.props.game.chests,
+                    this.props.game.skeleton.number,
+                    this.props.game.bat.number,
+                    this.props.game.potion.number,
+                    this.props.game.chest.number,
                     1,
                     0)
 
@@ -152,16 +152,16 @@ class CanvasComponent extends React.Component {
         this.props.game.gameState.forEach((row, y) => {
             row.forEach((item, x) => {
                 switch(item) {
-                    case "skeletons":
+                    case "skeleton":
                         c.drawImage(skeleton, 16 * x, 16 * y)
                         break
-                    case "bats":
+                    case "bat":
                         c.drawImage(bat, 16 * x, 16 * y)
                         break
-                    case "potions":
+                    case "potion":
                         c.drawImage(potion, 16 * x, 16 * y)
                         break
-                    case "chests":
+                    case "chest":
                         c.drawImage(chest, 16 * x, 16 * y)
                         break
                     case "miniboss":
@@ -180,7 +180,7 @@ class CanvasComponent extends React.Component {
 
     /* Render */
     render() {
-        console.log(this.props.game.player.currentHealth)
+        console.log(this.props.game.player)
         return(
             <canvas ref="canvas" tabIndex="1"></canvas>
         )
@@ -204,11 +204,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(CanvasComponent)
 
 
 /* Constructors */
-function Population(skeletons, bats, potions, chests, miniboss, finalboss) {
-    this.skeletons = skeletons + (Math.floor(Math.random() * 3) - 1)
-    this.bats = bats + (Math.floor(Math.random() * 3) - 1)
-    this.potions = potions + (Math.floor(Math.random() * 3) - 1)
-    this.chests = chests + (Math.floor(Math.random() * 3) - 1)
+function Population(skeleton, bat, potion, chest, miniboss, finalboss) {
+    this.skeleton = skeleton + (Math.floor(Math.random() * 3) - 1)
+    this.bat = bat + (Math.floor(Math.random() * 3) - 1)
+    this.potion = potion + (Math.floor(Math.random() * 3) - 1)
+    this.chest = chest + (Math.floor(Math.random() * 3) - 1)
     this.miniboss = miniboss
     this.finalboss = finalboss
 }
