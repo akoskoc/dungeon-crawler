@@ -1,6 +1,6 @@
 import data from "./../data/data"
 
 
-export default function gameReducer(state = data.maps, action) {
+export default function mapReducer(state = data.maps, action) {
     return state
 }

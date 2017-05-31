@@ -15,10 +15,6 @@ const epicItems = {
         effect: "20% damage reduction",
         slot: "helmet"
     },
-    swiftBoots: {
-        effect: "Run like the wind",
-        slot: "boots"
-    },
     swiftGloves: {
         effect: "50% chance to double attack",
         slot: "gloves"

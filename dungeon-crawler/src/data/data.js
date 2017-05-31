@@ -10,16 +10,20 @@ const data = {
         bats: 8,
         chests: 4,
         potions: 7,
-        level: 0
-    },
-    character: {
-        health: 100,
-        attack: 8-12,
-        vision: 5,
-        vitality: 0,
-        strength: 0,
-        agility: 0,
-        speed: 1
+        level: 0,
+        player: {
+            maxHealth: 100,
+            currentHealth: 100,
+            attack: 8-12,
+            vision: 5,
+            vitality: 0,
+            strength: 0,
+            agility: 0,
+            speed: 1
+        },
+        potion: {
+            restore: 40
+        }
     },
     skeleton: {
         health: 60,
@@ -28,9 +32,6 @@ const data = {
     bat: {
         health: 40,
         attack: 6-8
-    },
-    potion: {
-        restore: 40-60
     },
     chest: {
         vitality: 1,

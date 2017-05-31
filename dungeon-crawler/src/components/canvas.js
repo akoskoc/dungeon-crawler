@@ -60,9 +60,9 @@ class CanvasComponent extends React.Component {
 
 
     draw(init) {
-        var canvas = this.refs.canvas
-        var c = canvas.getContext("2d")
-        var dirt = this.state.sprites.dirt,
+        var canvas = this.refs.canvas,
+            c = canvas.getContext("2d"),
+            dirt = this.state.sprites.dirt,
             floor = this.state.sprites.floor,
             player = this.state.sprites.player,
             skeleton = this.state.sprites.skeleton,
@@ -76,15 +76,17 @@ class CanvasComponent extends React.Component {
             miniboss = this.state.sprites.miniboss,
             finalboss = this.state.sprites.finalboss
 
+        /* Init if first time running */
         if (init) {
             var initGameState = [],
                 population = new Population(
-                this.props.game.skeletons,
-                this.props.game.bats,
-                this.props.game.potions,
-                this.props.game.chests,
-                1,
-                0)
+                    this.props.game.skeletons,
+                    this.props.game.bats,
+                    this.props.game.potions,
+                    this.props.game.chests,
+                    1,
+                    0)
+
             this.props.maps.level1.forEach((row, y) => {
                 initGameState.push([])
                 row.forEach((tile, x) => {
@@ -178,6 +180,7 @@ class CanvasComponent extends React.Component {
 
     /* Render */
     render() {
+        console.log(this.props.game.player.currentHealth)
         return(
             <canvas ref="canvas" tabIndex="1"></canvas>
         )
@@ -210,7 +213,7 @@ function Population(skeletons, bats, potions, chests, miniboss, finalboss) {
     this.finalboss = finalboss
 }
 
-/* Randomize enemies/chests etc on the map */
+/* Randomize objects etc on the map */
 function placeObjects(gameState, population) {
     var emptyPlace = []
 

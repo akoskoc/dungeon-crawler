@@ -14,48 +14,35 @@ export default function gameReducer(state = data.game, action) {
         /* Player input */
         case "PLAYER_ROUND":
 
-            return Object.assign({}, state, {
-                gameState: handlePlayerMove(state.gameState, action.payload)
-            })
+            return Object.assign({},
+                handlePlayerMove(state,  action.payload)
+            )
             break
     }
     return state
 }
 
 /* Handle player move */
-function handlePlayerMove(gameState, key) {
+function handlePlayerMove(game, key) {
 
-
-    for (var i = 0; i < gameState.length; i += 1) {
-        for (var k = 0; k < gameState[i].length; k += 1) {
-            if (gameState[i][k] === "player") {
+    for (var i = 0; i < game.gameState.length; i += 1) {
+        for (var k = 0; k < game.gameState[i].length; k += 1) {
+            if (game.gameState[i][k] === "player") {
                 switch(key) {
                     case "ArrowUp":
-                        if (checkMove(gameState, i - 1, k) === "move") {
-                            gameState[i - 1][k] = "player"
-                            gameState[i][k] = 1
-                        }
+                        checkMove(key, game, i - 1, k)
                         break
                     case "ArrowDown":
-                        if (checkMove(gameState, i + 1, k) === "move") {
-                            gameState[i + 1][k] = "player"
-                            gameState[i][k] = 1
-                        }
+                        checkMove(key, game, i + 1, k)
                         break
                     case "ArrowLeft":
-                        if (checkMove(gameState, i, k - 1) === "move") {
-                            gameState[i][k - 1] = "player"
-                            gameState[i][k] = 1
-                        }
+                        checkMove(key, game, i, k - 1)
                         break
                     case "ArrowRight":
-                        if (checkMove(gameState, i, k + 1) === "move") {
-                            gameState[i][k + 1] = "player"
-                            gameState[i][k] = 1
-                        }
+                        checkMove(key, game, i, k + 1)
                         break
                 }
-                return gameState
+                return game
             }
         }
     }
@@ -63,12 +50,74 @@ function handlePlayerMove(gameState, key) {
 
 
 /* Check move */
-function checkMove(gameState, y, x) {
-    if (gameState[y][x] !== 0 && gameState[y][x] !== undefined) {
-        switch(gameState[y][x]) {
-            default:
-                return "move"
+function checkMove(key, game, y, x) {
+
+    if (game.gameState[y][x] !== 0 && game.gameState[y][x] !== undefined) {
+        switch(game.gameState[y][x]) {
+            case "potions": {
+                takePotion(key, game, y, x)
+                break
+            }
+            case 1:
+                move(key, game, y, x)
                 break
         }
+    }
+}
+/* Move player*/
+function move(key, game, y, x) {
+    switch(key) {
+        case "ArrowUp":
+            game.gameState[y][x] = "player"
+            game.gameState[y + 1][x] = 1
+
+            break
+        case "ArrowDown":
+            game.gameState[y][x] = "player"
+            game.gameState[y - 1][x] = 1
+
+            break
+        case "ArrowLeft":
+            game.gameState[y][x] = "player"
+            game.gameState[y][x + 1] = 1
+
+            break
+        case "ArrowRight":
+            game.gameState[y][x] = "player"
+            game.gameState[y][x - 1] = 1
+
+            break
+    }
+}
+
+/* Take potion */
+function takePotion(key, game, y, x) {
+    if (game.player.currentHealth < game.player.maxHealth) {
+        game.player.currentHealth = game.player.currentHealth
+        + game.potion.restore < game.player.maxHealth
+        ? game.player.currentHealth + game.potion.restore
+        : game.player.maxHealth
+    }
+    switch(key) {
+        case "ArrowUp":
+            game.gameState[y][x] = "player"
+            game.gameState[y + 1][x] = 1
+
+            break
+        case "ArrowDown":
+            game.gameState[y][x] = "player"
+            game.gameState[y - 1][x] = 1
+
+            break
+        case "ArrowLeft":
+            game.gameState[y][x] = "player"
+            game.gameState[y][x + 1] = 1
+
+            break
+        case "ArrowRight":
+            game.gameState[y][x] = "player"
+            game.gameState[y][x - 1] = 1
+
+            break
     }
 }
