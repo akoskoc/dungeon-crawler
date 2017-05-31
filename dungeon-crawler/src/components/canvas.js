@@ -72,6 +72,35 @@ class CanvasComponent extends React.Component {
 
     componentDidMount() {
         var canvas = this.refs.canvas
+
+        /* Canvas size */
+        canvas.height = this.props.game.size
+        canvas.width = this.props.game.size
+
+        /* Wait for the images to load */
+        window.onload = () => {
+            this.draw(true)
+
+            /* Key event listener + update state */
+            canvas.addEventListener("keydown", (event) => {
+                if (event.key === "ArrowUp"
+                    || event.key === "ArrowDown"
+                    || event.key === "ArrowLeft"
+                    || event.key === "ArrowRight") {
+                        this.props.playerRound(event.key)
+                    }
+            })
+        }
+    }
+
+
+    componentDidUpdate() {
+        this.draw(false)
+    }
+
+
+    draw(init) {
+        var canvas = this.refs.canvas
         var c = canvas.getContext("2d")
         var dirt = this.state.sprites.dirt,
             floor = this.state.sprites.floor,
@@ -87,122 +116,77 @@ class CanvasComponent extends React.Component {
             miniboss = this.state.sprites.miniboss,
             finalboss = this.state.sprites.finalboss
 
-        /* Canvas size */
-        canvas.height = this.props.game.size
-        canvas.width = this.props.game.size
-
-        /* Wait for the images to load */
-        window.onload = () => {
-
-            /* Populate */
-            var population = new Population(
+        if (init) {
+            var initGameState = [],
+                population = new Population(
                 this.props.game.skeletons,
                 this.props.game.bats,
                 this.props.game.potions,
                 this.props.game.chests,
                 1,
                 0)
-            var initGameState = []
-
-
-            /* Need to redraw, make all arrow keys functional*/
-
-            /* Display map */
             this.props.maps.level1.forEach((row, y) => {
                 initGameState.push([])
                 row.forEach((tile, x) => {
                     switch(tile) {
                         case 0:
                             initGameState[y].push(1)
-                            c.drawImage(dirt, 16 * x,16 * y);
                             break
                         case 1:
                             initGameState[y].push(1)
-                            c.drawImage(floor, 16 * x,16 * y);
                             break
                         case 2:
                             initGameState[y].push(0)
-                            c.drawImage(wall, 16 * x,16 * y);
                             break
                         case 3:
                             initGameState[y].push(0)
-                            c.drawImage(wall, 16 * x,16 * y);
-                            c.drawImage(torch, 16 * x,16 * y);
                             break
                         case 4:
                             initGameState[y].push(2)
-                            c.drawImage(floor, 16 * x,16 * y);
-                            c.drawImage(portal, 16 * x,16 * y);
                             break
                         case 5:
                             initGameState[y].push(1)
-                            c.drawImage(floor, 16 * x,16 * y);
-                            c.drawImage(door, 16 * x,16 * y);
                             break
                     }
                 })
-
             })
 
             /* Place stuff on the map */
             initGameState = placeObjects(initGameState, population)
-
-            /* Display stuff on the map */
-            initGameState.forEach((row, y) => {
-                row.forEach((item, x) => {
-                    switch(item) {
-                        case "skeletons":
-                            c.drawImage(skeleton, 16 * x, 16 * y)
-                            break
-                        case "bats":
-                            c.drawImage(bat, 16 * x, 16 * y)
-                            break
-                        case "potions":
-                            c.drawImage(potion, 16 * x, 16 * y)
-                            break
-                        case "chests":
-                            c.drawImage(chest, 16 * x, 16 * y)
-                            break
-                        case "miniboss":
-                            c.drawImage(miniboss, 16 * x, 16 * y)
-                            break
-                        case "finalboss":
-                            c.drawImage(finalboss, 16 * x, 16 * y)
-                            break
-                        case "player":
-                            c.drawImage(player, 16 * x, 16 * y)
-                            break
-                        }
-                })
-            })
-
-            /* Key event listener + update state */
-            canvas.addEventListener("keydown", (event) => {
-                if (event.key === "ArrowUp"
-                    || event.key === "ArrowDown"
-                    || event.key === "ArrowLeft"
-                    || event.key === "ArrowRight") {
-                        this.props.playerRound(event.key)
-                    }
-            })
-
-            /* Init game state */
             this.props.setGameState(initGameState)
         }
-    }
 
+        /* Display map */
+        this.props.maps.level1.forEach((row, y) => {
+            row.forEach((tile, x) => {
+                switch(tile) {
+                    case 0:
+                        c.drawImage(dirt, 16 * x,16 * y);
+                        break
+                    case 1:
+                        c.drawImage(floor, 16 * x,16 * y);
+                        break
+                    case 2:
+                        c.drawImage(wall, 16 * x,16 * y);
+                        break
+                    case 3:
+                        c.drawImage(wall, 16 * x,16 * y);
+                        c.drawImage(torch, 16 * x,16 * y);
+                        break
+                    case 4:
+                        c.drawImage(floor, 16 * x,16 * y);
+                        c.drawImage(portal, 16 * x,16 * y);
+                        break
+                    case 5:
+                        c.drawImage(floor, 16 * x,16 * y);
+                        c.drawImage(door, 16 * x,16 * y);
+                        break
+                }
+            })
 
-    componentDidUpdate() {
-        var canvas = this.refs.canvas
-        var c = canvas.getContext("2d")
-        var player = this.state.sprites.player,
-            skeleton = this.state.sprites.skeleton,
-            potion = this.state.sprites.potion,
-            chest = this.state.sprites.chest,
-            bat = this.state.sprites.bat,
-            miniboss = this.state.sprites.miniboss,
-            finalboss = this.state.sprites.finalboss
+        })
 
+        /* Draw objects */
         this.props.game.gameState.forEach((row, y) => {
             row.forEach((item, x) => {
                 switch(item) {
@@ -232,10 +216,8 @@ class CanvasComponent extends React.Component {
         })
     }
 
-
     /* Render */
     render() {
-        console.log(this.props.game)
         return(
             <canvas ref="canvas" tabIndex="1"></canvas>
         )

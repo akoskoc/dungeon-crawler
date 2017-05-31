@@ -3,11 +3,15 @@ import data from "./../data/data"
 
 export default function gameReducer(state = data.game, action) {
     switch(action.type) {
+
+        /* Init */
         case "SET_GAME_STATE":
             return Object.assign({}, state, {
                 gameState: action.payload
             })
             break
+
+        /* Player input */
         case "PLAYER_ROUND":
 
             return Object.assign({}, state, {
@@ -21,21 +25,40 @@ export default function gameReducer(state = data.game, action) {
 /* Handle player move */
 function handlePlayerMove(gameState, key) {
 
-    gameState.forEach((row, y) => {
-        row.forEach((tile, x) => {
-            if (tile === "player") {
+
+    for (var i = 0; i < gameState.length; i += 1) {
+        for (var k = 0; k < gameState[i].length; k += 1) {
+            if (gameState[i][k] === "player") {
                 switch(key) {
                     case "ArrowUp":
-                        if (checkMove(gameState, y - 1, x) === "move") {
-                            gameState[y - 1][x] = "player"
-                            gameState[y][x] = 1
+                        if (checkMove(gameState, i - 1, k) === "move") {
+                            gameState[i - 1][k] = "player"
+                            gameState[i][k] = 1
+                        }
+                        break
+                    case "ArrowDown":
+                        if (checkMove(gameState, i + 1, k) === "move") {
+                            gameState[i + 1][k] = "player"
+                            gameState[i][k] = 1
+                        }
+                        break
+                    case "ArrowLeft":
+                        if (checkMove(gameState, i, k - 1) === "move") {
+                            gameState[i][k - 1] = "player"
+                            gameState[i][k] = 1
+                        }
+                        break
+                    case "ArrowRight":
+                        if (checkMove(gameState, i, k + 1) === "move") {
+                            gameState[i][k + 1] = "player"
+                            gameState[i][k] = 1
                         }
                         break
                 }
+                return gameState
             }
-        })
-    })
-    return gameState
+        }
+    }
 }
 
 
