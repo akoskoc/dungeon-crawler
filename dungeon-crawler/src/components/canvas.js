@@ -6,65 +6,26 @@ import { bindActionCreators } from "redux"
 import setGameState from "./../actions/setGameState"
 import playerRound from "./../actions/playerRound"
 
+
 class CanvasComponent extends React.Component {
 
     constructor(props) {
         super(props)
-        /* Sprites */
-        var dirt = new Image();
-        dirt.src = "./img/dirt.png"
-
-        var floor = new Image()
-        floor.src = "./img/floor.png"
-
-        var player = new Image()
-        player.src = "./img/player.png"
-
-        var skeleton = new Image()
-        skeleton.src = "./img/skeleton.png"
-
-        var potion = new Image()
-        potion.src = "./img/potion.png"
-
-        var torch = new Image()
-        torch.src = "./img/torch.png"
-
-        var wall = new Image()
-        wall.src = "./img/wall.png"
-
-        var chest = new Image()
-        chest.src = "./img/chest.png"
-
-        var bat = new Image()
-        bat.src = "./img/bat.png"
-
-        var portal = new Image()
-        portal.src = "./img/portal.png"
-
-        var door = new Image()
-        door.src = "./img/door.png"
-
-        var miniboss = new Image()
-        miniboss.src = "./img/miniboss.png"
-
-        var finalboss = new Image()
-        finalboss.src = "./img/finalboss.png"
-
         this.state = {
             sprites: {
-                dirt,
-                floor,
-                player,
-                skeleton,
-                potion,
-                torch,
-                wall,
-                chest,
-                bat,
-                portal,
-                door,
-                miniboss,
-                finalboss
+                dirt: this.props.sprites.dirt.img,
+                floor: this.props.sprites.floor.img,
+                player: this.props.sprites.player.img,
+                skeleton: this.props.sprites.skeleton.img,
+                potion: this.props.sprites.potion.img,
+                torch: this.props.sprites.torch.img,
+                wall: this.props.sprites.wall.img,
+                chest: this.props.sprites.chest.img,
+                bat: this.props.sprites.bat.img,
+                portal: this.props.sprites.portal.img,
+                door: this.props.sprites.door.img,
+                miniboss: this.props.sprites.miniboss.img,
+                finalboss: this.props.sprites.finalboss.img
             }
         }
     }
@@ -92,7 +53,6 @@ class CanvasComponent extends React.Component {
             })
         }
     }
-
 
     componentDidUpdate() {
         this.draw(false)

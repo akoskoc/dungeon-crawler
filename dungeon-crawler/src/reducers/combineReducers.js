@@ -8,6 +8,8 @@ import chest from "./reducerChest"
 import potion from "./reducerPotion"
 import skeleton from "./reducerSkeleton"
 import maps from "./reducerMaps"
+import epicItems from "./reducerEpicItems"
+import sprites from "./reducerSprites"
 
 export default combineReducers({
     game,
@@ -16,5 +18,7 @@ export default combineReducers({
     chest,
     potion,
     skeleton,
-    maps
+    maps,
+    epicItems,
+    sprites
 })
