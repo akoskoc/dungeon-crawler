@@ -80,38 +80,34 @@ class CanvasComponent extends React.Component {
         if (init) {
             var initGameState = [],
                 population = new Population(
-                    this.props.game.skeleton.number,
-                    this.props.game.bat.number,
-                    this.props.game.potion.number,
-                    this.props.game.chest.number,
-                    1,
-                    0)
+                    this.props.game.skeleton,
+                    this.props.game.bat,
+                    this.props.game.potion,
+                    this.props.game.chest,
+                    this.props.game.miniboss,
+                    this.props.game.finalboss,
+                    this.props.game.player)
 
+            /* Fill gameState */
             this.props.maps.level1.forEach((row, y) => {
                 initGameState.push([])
                 row.forEach((tile, x) => {
-                    switch(tile) {
-                        case 0:
-                            initGameState[y].push(1)
-                            break
-                        case 1:
-                            initGameState[y].push(1)
-                            break
-                        case 2:
-                            initGameState[y].push(0)
-                            break
-                        case 3:
-                            initGameState[y].push(0)
-                            break
-                        case 4:
-                            initGameState[y].push(2)
-                            break
-                        case 5:
-                            initGameState[y].push(1)
-                            break
-                    }
+                    pickTile(tile, initGameState, y, x)
                 })
             })
+
+            /* Switch */
+            function pickTile(tile, initGameState, y, x) {
+                var pickTile = {
+                    "0": () => initGameState[y].push(1),
+                    "1": () => initGameState[y].push(1),
+                    "2": () => initGameState[y].push(0),
+                    "3": () => initGameState[y].push(0),
+                    "4": () => initGameState[y].push(2),
+                    "5": () => initGameState[y].push(1)
+                }
+                pickTile[tile.toString()]()
+            }
 
             /* Place stuff on the map */
             initGameState = placeObjects(initGameState, population)
@@ -121,61 +117,54 @@ class CanvasComponent extends React.Component {
         /* Display map */
         this.props.maps.level1.forEach((row, y) => {
             row.forEach((tile, x) => {
-                switch(tile) {
-                    case 0:
-                        c.drawImage(dirt, 16 * x,16 * y);
-                        break
-                    case 1:
-                        c.drawImage(floor, 16 * x,16 * y);
-                        break
-                    case 2:
-                        c.drawImage(wall, 16 * x,16 * y);
-                        break
-                    case 3:
-                        c.drawImage(wall, 16 * x,16 * y);
-                        c.drawImage(torch, 16 * x,16 * y);
-                        break
-                    case 4:
-                        c.drawImage(floor, 16 * x,16 * y);
-                        c.drawImage(portal, 16 * x,16 * y);
-                        break
-                    case 5:
-                        c.drawImage(floor, 16 * x,16 * y);
-                        c.drawImage(door, 16 * x,16 * y);
-                        break
-                }
+                fillBackground(tile, c, y, x)
             })
-
         })
+
+        /* Switch */
+        function fillBackground(tile, c, y, x) {
+            var pickTile = {
+                "0": () => c.drawImage(dirt, 16 * x,16 * y),
+                "1": () => c.drawImage(floor, 16 * x,16 * y),
+                "2": () => c.drawImage(wall, 16 * x,16 * y),
+                "3": () => {
+                    c.drawImage(wall, 16 * x,16 * y)
+                    c.drawImage(torch, 16 * x,16 * y)
+                },
+                "4": () => {
+                    c.drawImage(floor, 16 * x,16 * y)
+                    c.drawImage(portal, 16 * x,16 * y)
+                },
+                "5": () => {
+                    c.drawImage(floor, 16 * x,16 * y)
+                    c.drawImage(door, 16 * x,16 * y)
+                }
+            }
+            pickTile[tile.toString()]()
+        }
+
 
         /* Draw objects */
         this.props.game.gameState.forEach((row, y) => {
             row.forEach((item, x) => {
-                switch(item) {
-                    case "skeleton":
-                        c.drawImage(skeleton, 16 * x, 16 * y)
-                        break
-                    case "bat":
-                        c.drawImage(bat, 16 * x, 16 * y)
-                        break
-                    case "potion":
-                        c.drawImage(potion, 16 * x, 16 * y)
-                        break
-                    case "chest":
-                        c.drawImage(chest, 16 * x, 16 * y)
-                        break
-                    case "miniboss":
-                        c.drawImage(miniboss, 16 * x, 16 * y)
-                        break
-                    case "finalboss":
-                        c.drawImage(finalboss, 16 * x, 16 * y)
-                        break
-                    case "player":
-                        c.drawImage(player, 16 * x, 16 * y)
-                        break
-                    }
+                fillObjects(item.name, c, y, x)
             })
         })
+
+        /* Switch */
+        function fillObjects(name, c, y, x) {
+            var pickTile = {
+                "skeleton": () => c.drawImage(skeleton, 16 * x,16 * y),
+                "bat": () => c.drawImage(bat, 16 * x,16 * y),
+                "potion": () => c.drawImage(potion, 16 * x,16 * y),
+                "chest": () => c.drawImage(chest, 16 * x,16 * y),
+                "miniboss": () => c.drawImage(miniboss, 16 * x,16 * y),
+                "finalboss": () => c.drawImage(finalboss, 16 * x,16 * y),
+                "player": () => c.drawImage(player, 16 * x,16 * y),
+                "default": () => {return}
+            }
+            pickTile[name || "default"]()
+        }
     }
 
     /* Render */
@@ -204,19 +193,27 @@ export default connect(mapStateToProps, mapDispatchToProps)(CanvasComponent)
 
 
 /* Constructors */
-function Population(skeleton, bat, potion, chest, miniboss, finalboss) {
-    this.skeleton = skeleton + (Math.floor(Math.random() * 3) - 1)
-    this.bat = bat + (Math.floor(Math.random() * 3) - 1)
-    this.potion = potion + (Math.floor(Math.random() * 3) - 1)
-    this.chest = chest + (Math.floor(Math.random() * 3) - 1)
-    this.miniboss = miniboss
-    this.finalboss = finalboss
+function Population(skeleton, bat, potion, chest, miniboss, finalboss, player) {
+    this.skeleton = Object.assign({}, skeleton, {
+        number: skeleton.number + (Math.floor(Math.random() * 3) - 1)
+    })
+    this.bat = Object.assign({}, bat, {
+        number: bat.number + (Math.floor(Math.random() * 3) - 1)
+    })
+    this.potion = Object.assign({}, potion, {
+        number: potion.number + (Math.floor(Math.random() * 3) - 1)
+    })
+    this.chest = Object.assign({}, chest, {
+        number: chest.number + (Math.floor(Math.random() * 3) - 1)
+    })
+    this.miniboss = Object.assign({}, miniboss)
+    this.finalboss = Object.assign({}, finalboss)
+    this.player = Object.assign({}, player)
 }
 
 /* Randomize objects etc on the map */
 function placeObjects(gameState, population) {
     var emptyPlace = []
-
     for (var y = 0; y < gameState.length; y += 1) {
         for (var x = 0; x < gameState[y].length; x += 1) {
             if (gameState[y][x] === 1) {
@@ -224,18 +221,15 @@ function placeObjects(gameState, population) {
             }
         }
     }
+
     for (var object in population) {
-        for (var i = 0; i < population[object]; i += 1) {
+        console.log(object)
+        for (var i = 0; i < population[object].number; i += 1) {
             var num = Math.floor(Math.random() * emptyPlace.length)
-            gameState[emptyPlace[num].y][emptyPlace[num].x] = object
+            gameState[emptyPlace[num].y][emptyPlace[num].x] = population[object]
             emptyPlace = emptyPlace.filter((item) => item !== emptyPlace[num])
         }
     }
-
-    /* Place player */
-    num = Math.floor(Math.random() * emptyPlace.length)
-    gameState[emptyPlace[num].y][emptyPlace[num].x] = "player"
-
 
     return gameState
 }

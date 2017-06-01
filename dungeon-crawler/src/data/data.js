@@ -7,16 +7,39 @@ const data = {
         size: 400,
         gameState: [],
         skeleton: {
+            name: "skeleton",
             health: 60,
-            attack: 8-12,
+            currentHealth: 60,
+            attackLow: 6,
+            attackHigh: 8,
             number: 3
         },
         bat: {
+            name: "bat",
             health: 40,
-            attack: 6-8,
+            currentHealth: 40,
+            attackLow: 4,
+            attackHigh: 6,
             number:8
         },
+        miniboss: {
+            name: "miniboss",
+            health: 100,
+            currentHealth: 100,
+            attackLow: 10,
+            attackHigh: 14,
+            number: 1
+        },
+        finalboss: {
+            name: "finalboss",
+            health: 100,
+            currentHealth: 100,
+            attackLow: 10,
+            attackHigh: 14,
+            number: 0
+        },
         chest: {
+            name: "chest",
             items: [
                 "vitality",
                 "strength",
@@ -31,11 +54,13 @@ const data = {
             number:4
         },
         potion: {
+            name: "potion",
             restore: 40,
             number:7
         },
         level: 1,
         player: {
+            name: "player",
             maxHealth: 100,
             currentHealth: 50,
             attackLow: 0,
@@ -44,7 +69,8 @@ const data = {
             vision: 4,
             vitality: 0,
             strength: 0,
-            agility: 0
+            agility: 0,
+            number: 1
         }
     },
     epicItems,
