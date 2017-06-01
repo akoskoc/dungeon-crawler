@@ -1,32 +1,32 @@
-const epicItems = {
-    plateArmor: {
+const epicItems = [
+    "plateArmor": {
         effect: "20% damage reduction",
         slot: "chest"
     },
-    leatherArmor: {
+    "leatherArmor": {
         effect: "20% chance to dodge",
         slot: "chest"
     },
-    minerHelmet: {
+    "minerHelmet": {
         effect: "increase vision by 3 tiles",
         slot: "helmet"
     },
-    plateHelmet: {
+    "plateHelmet": {
         effect: "20% damage reduction",
         slot: "helmet"
     },
-    swiftGloves: {
+    "swiftGloves": {
         effect: "50% chance to double attack",
         slot: "gloves"
     },
-    vampireEnchantment: {
+    "vampireEnchantment": {
         effect: "50% of damage dealt is leeched back as life",
         slot: "enchantment"
     },
-    poisionEnchantment: {
+    "poisionEnchantment": {
         effect: "reduce the damage your enemy deals to you by 20%",
         slot: "enchantment"
     }
-}
+]
 
 export default epicItems

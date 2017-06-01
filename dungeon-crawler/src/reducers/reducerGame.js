@@ -7,7 +7,10 @@ export default function gameReducer(state = data.game, action) {
         /* Init */
         case "SET_GAME_STATE":
             return Object.assign({}, state, {
-                gameState: action.payload
+                gameState: action.payload,
+                player: Object.assign({}, state.player, {
+                    isAlive: true
+                })
             })
             break
 
@@ -50,23 +53,25 @@ function handlePlayerMove(game, key) {
 function checkMove(key, game, y, x) {
 
     if (game.gameState[y][x] !== 0 && game.gameState[y][x] !== undefined) {
-        if (typeof game.gameState[y][x] === "number") {
-            handleObject(game.gameState[y][x], key, game, y, x)
-        } else {
-            handleObject(game.gameState[y][x].name, key, game, y, x)
-        }
+        handleObject(game.gameState[y][x], key, game, y, x)
     }
 
     /* Switch */
-    function handleObject(objectName, key, game, y, x) {
+    function handleObject(object, key, game, y, x) {
         var currentObject = {
+            "skeleton": () => fight(game, y, x, object),
+            "bat": () => fight(game, y, x, object),
+            "miniboss": () => fight(game, y, x, object),
+            "1": () => move(key, game, y, x),
             "potion": () => takePotion(key, game, y, x),
             "chest": () => openChest(key, game, y, x),
-            "1": () => move(key, game, y , x),
             "default": () => {return}
         }
-
-        currentObject[objectName.toString() || "default"]()
+        if (typeof object === "number") {
+            currentObject[object.toString() || "default"]()
+        } else {
+            currentObject[object.name.toString() || "default"]()
+        }
     }
 }
 
@@ -111,7 +116,9 @@ function takePotion(key, game, y, x) {
 /* Open chest */
 function openChest(key, game, y, x) {
     var takeItem = {
-        "weapon": () => game.player.currentWeapon += 1,
+        "weapon": () => game.player.currentWeapon < 4
+            ? game.player.currentWeapon += 1
+            : game.player.currentWeapon,
         "strength": () => {
             game.player.strength += 1
             game.player.attackLow = 4 * game.player.strength
@@ -119,8 +126,8 @@ function openChest(key, game, y, x) {
         },
         "vitality": () => {
             game.player.vitality += 1
-            game.player.maxHealth = 100 + (10 * game.player.vitality)
-            game.player.currentHealth += 10
+            game.player.maxHealth = 100 + (20 * game.player.vitality)
+            game.player.currentHealth += 20
         },
         "agility": () => game.player.agility += 1
     }
@@ -131,6 +138,58 @@ function openChest(key, game, y, x) {
 }
 
 /* Fight */
-function fight(key, game, y, x, enemy) {
+/* NEED TO APPLY EPIC ITEMS SOMEHOW TO THE PLAYER */
+function fight(game, y, x, enemy) {
+    /* Player attacks the enemy */
+    /* Todo: vampirism, double attack, poison, if etc */
+    var playerDamage = game.player.items.weapon[game.player.currentWeapon]
+    + Math.floor(Math.random()
+    * ((game.player.attackHigh + 1) - game.player.attackLow))
+    + game.player.attackLow
+    enemy.currentHealth -= playerDamage
 
+    if (enemy.currentHealth > 0) {
+        /* Enemy attacks the player */
+        /* Todo: dodge, damage reduction, if etc, is player dead */
+        var enemyDamage = Math.floor(Math.random() * ((enemy.attackHigh + 1) - enemy.attackLow)) + enemy.attackLow
+        if (Math.random() <= game.player.dodge/100) {
+            return
+        } else {
+            game.player.currentHealth -= Math.floor(enemyDamage * ( 1 - game.player.damageReduction/100)) !== 0 ? Math.floor(enemyDamage * ( 1 - game.player.damageReduction/100)) : enemyDamage
+
+            console.log(game.player.currentHealth)
+            if (game.player.currentHealth <= 0) {
+                game.player.isAlive = false
+            }
+        }
+
+
+    } else {
+        /* Enemy dies */
+        var enemies = {
+            "bat": () => {
+                game.player.currentExperience + 20 * game.level < game.player.maxExperience ? game.player.currentExperience += 20 : levelUp(game.player, 20)
+            },
+            "skeleton": () => {
+                game.player.currentExperience + 30 * game.level < game.player.maxExperience ? game.player.currentExperience += 30 : levelUp(game.player, 30)
+            },
+            "miniboss": () => {
+                game.player.currentExperience + 50 * game.level < game.player.maxExperience ? game.player.currentExperience += 50 : levelUp(game.player, 50)
+            }
+        }
+        enemies[enemy.name]()
+        game.gameState[y][x] = 1
+    }
+
+
+    /* Level up */
+    function levelUp(player, experienceGain) {
+        player.maxHealth += 10 * player.level
+        player.currentHealth = player.maxHealth
+        player.attackLow += 4
+        player.attackHigh += 6
+        player.currentExperience = player.maxExperience - (player.currentExperience + experienceGain)
+        player.maxExperience += 50 * player.level
+        player.level += 1
+    }
 }

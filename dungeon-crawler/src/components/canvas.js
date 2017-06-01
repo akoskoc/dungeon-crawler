@@ -55,8 +55,14 @@ class CanvasComponent extends React.Component {
     }
 
     componentDidUpdate() {
-        this.draw(false)
+        /* Game reset on death */
+        if (this.props.game.player.isAlive === false ) {
+            this.draw(true)
+        } else {
+            this.draw(false)
+        }
     }
+
 
 
     draw(init) {
@@ -154,13 +160,13 @@ class CanvasComponent extends React.Component {
         /* Switch */
         function fillObjects(name, c, y, x) {
             var pickTile = {
-                "skeleton": () => c.drawImage(skeleton, 16 * x,16 * y),
-                "bat": () => c.drawImage(bat, 16 * x,16 * y),
-                "potion": () => c.drawImage(potion, 16 * x,16 * y),
-                "chest": () => c.drawImage(chest, 16 * x,16 * y),
-                "miniboss": () => c.drawImage(miniboss, 16 * x,16 * y),
-                "finalboss": () => c.drawImage(finalboss, 16 * x,16 * y),
-                "player": () => c.drawImage(player, 16 * x,16 * y),
+                "skeleton": () => c.drawImage(skeleton, 16 * x, 16 * y),
+                "bat": () => c.drawImage(bat, 16 * x, 16 * y),
+                "potion": () => c.drawImage(potion, 16 * x, 16 * y),
+                "chest": () => c.drawImage(chest, 16 * x, 16 * y),
+                "miniboss": () => c.drawImage(miniboss, 16 * x, 16 * y),
+                "finalboss": () => c.drawImage(finalboss, 16 * x, 16 * y),
+                "player": () => c.drawImage(player, 16 * x, 16 * y),
                 "default": () => {return}
             }
             pickTile[name || "default"]()
@@ -169,7 +175,6 @@ class CanvasComponent extends React.Component {
 
     /* Render */
     render() {
-        console.log(this.props.game.player)
         return(
             <canvas ref="canvas" tabIndex="1"></canvas>
         )
@@ -223,10 +228,9 @@ function placeObjects(gameState, population) {
     }
 
     for (var object in population) {
-        console.log(object)
         for (var i = 0; i < population[object].number; i += 1) {
             var num = Math.floor(Math.random() * emptyPlace.length)
-            gameState[emptyPlace[num].y][emptyPlace[num].x] = population[object]
+            gameState[emptyPlace[num].y][emptyPlace[num].x] = Object.assign({}, population[object])
             emptyPlace = emptyPlace.filter((item) => item !== emptyPlace[num])
         }
     }

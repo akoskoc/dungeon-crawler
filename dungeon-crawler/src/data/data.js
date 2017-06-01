@@ -44,12 +44,7 @@ const data = {
                 "vitality",
                 "strength",
                 "agility",
-                "weapon": [
-                    10,
-                    15,
-                    20,
-                    25
-                ]
+                "weapon"
             ],
             number:4
         },
@@ -58,11 +53,10 @@ const data = {
             restore: 40,
             number:7
         },
-        level: 1,
         player: {
             name: "player",
             maxHealth: 100,
-            currentHealth: 50,
+            currentHealth: 100,
             attackLow: 0,
             attackHigh: 2,
             currentWeapon: 0,
@@ -70,8 +64,25 @@ const data = {
             vitality: 0,
             strength: 0,
             agility: 0,
-            number: 1
-        }
+            number: 1,
+            level: 1,
+            currentExperience: 0,
+            maxExperience: 100,
+            damageReduction: 0,
+            dodge: 0,
+            lifeSteal: 100,
+            doubleAttack: 100,
+            isAlive: true,
+            "items": {
+                "weapon": [
+                    10,
+                    15,
+                    20,
+                    25
+                ]
+            }
+        },
+        level: 1
     },
     epicItems,
     maps,
