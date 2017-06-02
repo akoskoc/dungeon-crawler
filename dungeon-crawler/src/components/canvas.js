@@ -5,30 +5,11 @@ import { bindActionCreators } from "redux"
 /* Action creators */
 import setGameState from "./../actions/setGameState"
 import playerRound from "./../actions/playerRound"
+import playerDeath from "./../actions/playerDeath"
+
 
 
 class CanvasComponent extends React.Component {
-
-    constructor(props) {
-        super(props)
-        this.state = {
-            sprites: {
-                dirt: this.props.sprites.dirt.img,
-                floor: this.props.sprites.floor.img,
-                player: this.props.sprites.player.img,
-                skeleton: this.props.sprites.skeleton.img,
-                potion: this.props.sprites.potion.img,
-                torch: this.props.sprites.torch.img,
-                wall: this.props.sprites.wall.img,
-                chest: this.props.sprites.chest.img,
-                bat: this.props.sprites.bat.img,
-                portal: this.props.sprites.portal.img,
-                door: this.props.sprites.door.img,
-                miniboss: this.props.sprites.miniboss.img,
-                finalboss: this.props.sprites.finalboss.img
-            }
-        }
-    }
 
 
     componentDidMount() {
@@ -55,10 +36,16 @@ class CanvasComponent extends React.Component {
     }
 
     componentDidUpdate() {
-        /* Game reset on death */
-        if (this.props.game.player.isAlive === false ) {
+        if (this.props.game.player.isAlive === false) {
+            /* Player death */
+            this.props.playerDeath()
+        } else if (this.props.game.gameState.length === 0) {
+            /* Player died need reset */
             this.draw(true)
-        } else {
+        } else if (this.props.game.level !== this.props.game.currentLevel ) {
+            /* New level */
+            this.draw(true)
+        }  else {
             this.draw(false)
         }
     }
@@ -68,19 +55,19 @@ class CanvasComponent extends React.Component {
     draw(init) {
         var canvas = this.refs.canvas,
             c = canvas.getContext("2d"),
-            dirt = this.state.sprites.dirt,
-            floor = this.state.sprites.floor,
-            player = this.state.sprites.player,
-            skeleton = this.state.sprites.skeleton,
-            potion = this.state.sprites.potion,
-            torch = this.state.sprites.torch,
-            wall = this.state.sprites.wall,
-            chest = this.state.sprites.chest,
-            bat = this.state.sprites.bat,
-            portal = this.state.sprites.portal,
-            door = this.state.sprites.door,
-            miniboss = this.state.sprites.miniboss,
-            finalboss = this.state.sprites.finalboss
+            dirt = this.props.sprites.dirt.img,
+            floor = this.props.sprites.floor.img,
+            player = this.props.sprites.player.img,
+            skeleton = this.props.sprites.skeleton.img,
+            potion = this.props.sprites.potion.img,
+            torch = this.props.sprites.torch.img,
+            wall = this.props.sprites.wall.img,
+            chest = this.props.sprites.chest.img,
+            bat = this.props.sprites.bat.img,
+            portal = this.props.sprites.portal.img,
+            door = this.props.sprites.door.img,
+            miniboss = this.props.sprites.miniboss.img,
+            finalboss = this.props.sprites.finalboss.img
 
         /* Init if first time running */
         if (init) {
@@ -95,7 +82,7 @@ class CanvasComponent extends React.Component {
                     this.props.game.player)
 
             /* Fill gameState */
-            this.props.maps.level1.forEach((row, y) => {
+            this.props.maps[this.props.game.level].forEach((row, y) => {
                 initGameState.push([])
                 row.forEach((tile, x) => {
                     pickTile(tile, initGameState, y, x)
@@ -121,7 +108,7 @@ class CanvasComponent extends React.Component {
         }
 
         /* Display map */
-        this.props.maps.level1.forEach((row, y) => {
+        this.props.maps[this.props.game.level].forEach((row, y) => {
             row.forEach((tile, x) => {
                 fillBackground(tile, c, y, x)
             })
@@ -175,6 +162,7 @@ class CanvasComponent extends React.Component {
 
     /* Render */
     render() {
+        console.log(this.props.game.player)
         return(
             <canvas ref="canvas" tabIndex="1"></canvas>
         )
@@ -188,7 +176,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
         setGameState,
-        playerRound
+        playerRound,
+        playerDeath
     }, dispatch)
 }
 
@@ -216,7 +205,7 @@ function Population(skeleton, bat, potion, chest, miniboss, finalboss, player) {
     this.player = Object.assign({}, player)
 }
 
-/* Randomize objects etc on the map */
+/* Randomize objects on the map */
 function placeObjects(gameState, population) {
     var emptyPlace = []
     for (var y = 0; y < gameState.length; y += 1) {

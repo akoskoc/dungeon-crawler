@@ -11,7 +11,8 @@ export default function gameReducer(state = data.game, action) {
                 gameState: action.payload,
                 player: Object.assign({}, state.player, {
                     isAlive: true
-                })
+                }),
+                currentLevel: state.level
             })
             break
 
@@ -20,6 +21,17 @@ export default function gameReducer(state = data.game, action) {
             return Object.assign({},
                 handlePlayerMove(state,  action.payload)
             )
+            break
+
+        /* Reset game on player death */
+        case "PLAYER_DEATH":
+            return Object.assign({}, state, {
+                gameState: [],
+                level: 0,
+                currentLevel: 0,
+                player: Object.assign({}, data.game.player)
+
+            })
             break
     }
     return state
@@ -60,10 +72,11 @@ function checkMove(key, game, y, x) {
     /* Switch */
     function handleObject(object, key, game, y, x) {
         var currentObject = {
+            "1": () => move(key, game, y, x),
+            "2": () => portal(game),
             "skeleton": () => fight(game, y, x, object),
             "bat": () => fight(game, y, x, object),
             "miniboss": () => fight(game, y, x, object),
-            "1": () => move(key, game, y, x),
             "potion": () => takePotion(key, game, y, x),
             "chest": () => openChest(key, game, y, x),
             "default": () => {return}
@@ -201,4 +214,23 @@ function fight(game, y, x, enemy) {
 
     }
 
+}
+
+/* Portal to new level */
+function portal(game) {
+    var miniboss = false
+    for (var i = 0; i < game.gameState.length; i += 1) {
+        for (var k = 0; k < game.gameState[i].length; k += 1) {
+            if (typeof game.gameState[i][k] === "object") {
+                if (game.gameState[i][k].name === "miniboss") {
+                    miniboss = true
+                }
+            }
+        }
+    }
+    if (!miniboss) {
+        game.level += 1
+    } else {
+        console.log("you have to kill the miniboss on this level")
+    }
 }

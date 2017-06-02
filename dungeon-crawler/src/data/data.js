@@ -98,7 +98,7 @@ const data = {
         player: {
             name: "player",
             maxHealth: 100,
-            currentHealth: 100,
+            currentHealth: 10,
             attackLow: 0,
             attackHigh: 2,
             currentWeapon: 0,
@@ -112,8 +112,8 @@ const data = {
             maxExperience: 100,
             damageReduction: 0,
             dodge: 0,
-            lifeSteal: true,
-            doubleAttack: true,
+            lifeSteal: false,
+            doubleAttack: false,
             isAlive: true,
             "items": {
                 "weapon": [
@@ -125,7 +125,8 @@ const data = {
             }
         },
         epicItems,
-        level: 1
+        level: 0,
+        currentLevel: 0
     },
     maps,
     sprites
