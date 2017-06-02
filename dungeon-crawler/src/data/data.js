@@ -12,7 +12,21 @@ const data = {
             currentHealth: 60,
             attackLow: 6,
             attackHigh: 8,
-            number: 3
+            number: 3,
+            dropTable: {
+                experience: {
+                    effect: (game, giveExperience, levelUp) => {
+                        giveExperience(game, 30, levelUp)
+                    },
+                    chance: 100
+                },
+                item: {
+                    effect: (game, giveItem) => {
+                        giveItem(game)
+                    },
+                    chance: 2
+                }
+            }
         },
         bat: {
             name: "bat",
@@ -20,7 +34,21 @@ const data = {
             currentHealth: 40,
             attackLow: 4,
             attackHigh: 6,
-            number:8
+            number:8,
+            dropTable: {
+                experience: {
+                    effect: (game, giveExperience, levelUp) => {
+                        giveExperience(game, 20, levelUp)
+                    },
+                    chance: 100
+                },
+                item: {
+                    effect: (game, giveItem) => {
+                        giveItem(game)
+                    },
+                    chance: 2
+                }
+            }
         },
         miniboss: {
             name: "miniboss",
@@ -28,7 +56,21 @@ const data = {
             currentHealth: 100,
             attackLow: 10,
             attackHigh: 14,
-            number: 1
+            number: 1,
+            dropTable: {
+                experience: {
+                    effect: (game, giveExperience, levelUp) => {
+                        giveExperience(game, 50, levelUp)
+                    },
+                    chance: 100
+                },
+                item: {
+                    effect: (game, giveItem) => {
+                        giveItem(game)
+                    },
+                    chance: 100
+                }
+            }
         },
         finalboss: {
             name: "finalboss",
@@ -70,8 +112,8 @@ const data = {
             maxExperience: 100,
             damageReduction: 0,
             dodge: 0,
-            lifeSteal: 100,
-            doubleAttack: 100,
+            lifeSteal: true,
+            doubleAttack: true,
             isAlive: true,
             "items": {
                 "weapon": [
@@ -82,14 +124,18 @@ const data = {
                 ]
             }
         },
+        epicItems,
         level: 1
     },
-    epicItems,
     maps,
     sprites
 }
 
 export default data
+
+
+
+
 /*
 0 = dirt
 1 = floor

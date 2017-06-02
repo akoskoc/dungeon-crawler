@@ -1,32 +1,18 @@
 const epicItems = [
-    "plateArmor": {
-        effect: "20% damage reduction",
-        slot: "chest"
-    },
-    "leatherArmor": {
-        effect: "20% chance to dodge",
-        slot: "chest"
-    },
-    "minerHelmet": {
-        effect: "increase vision by 3 tiles",
-        slot: "helmet"
-    },
-    "plateHelmet": {
-        effect: "20% damage reduction",
-        slot: "helmet"
-    },
-    "swiftGloves": {
-        effect: "50% chance to double attack",
-        slot: "gloves"
-    },
-    "vampireEnchantment": {
-        effect: "50% of damage dealt is leeched back as life",
-        slot: "enchantment"
-    },
-    "poisionEnchantment": {
-        effect: "reduce the damage your enemy deals to you by 20%",
-        slot: "enchantment"
-    }
+    (game) => game.player.damageReduction += 5,
+    (game) => game.player.damageReduction += 5,
+    (game) => game.player.damageReduction += 5,
+
+    (game) => game.player.vision += 1,
+    (game) => game.player.vision += 1,
+    (game) => game.player.vision += 1,
+
+    (game) => game.player.dodge += 10,
+
+    (game) => game.player.lifeSteal = true,
+
+    (game) => game.player.doubleAttack = true
+
 ]
 
 export default epicItems

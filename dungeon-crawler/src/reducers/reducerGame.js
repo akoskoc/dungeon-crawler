@@ -1,4 +1,5 @@
 import data from "./../data/data"
+import { drop } from "./helpers/drop"
 
 
 export default function gameReducer(state = data.game, action) {
@@ -129,7 +130,10 @@ function openChest(key, game, y, x) {
             game.player.maxHealth = 100 + (20 * game.player.vitality)
             game.player.currentHealth += 20
         },
-        "agility": () => game.player.agility += 1
+        "agility": () => {
+            game.player.agility += 1
+            game.player.dodge += 2
+        }
     }
     takeItem[game.chest.items[Math.floor(Math.random() * 4)]]()
 
@@ -138,58 +142,63 @@ function openChest(key, game, y, x) {
 }
 
 /* Fight */
-/* NEED TO APPLY EPIC ITEMS SOMEHOW TO THE PLAYER */
 function fight(game, y, x, enemy) {
     /* Player attacks the enemy */
-    /* Todo: vampirism, double attack, poison, if etc */
+    /* Todo: vampirism, double attack, if etc */
     var playerDamage = game.player.items.weapon[game.player.currentWeapon]
     + Math.floor(Math.random()
     * ((game.player.attackHigh + 1) - game.player.attackLow))
     + game.player.attackLow
+
+
+
+    /* Damage to enemy */
     enemy.currentHealth -= playerDamage
 
+    /* LifeSteal */
+    if (game.player.lifeSteal) {
+        game.player.currentHealth = game.player.currentHealth + Math.floor(playerDamage/2) <= game.player.maxHealth ? game.player.currentHealth + Math.floor(playerDamage/2) : game.player.maxHealth
+    }
+
+    /* Double attack */
+    if (game.player.doubleAttack && Math.floor(Math.random() * 2) > 0) {
+        enemy.currentHealth -= playerDamage
+
+        if (game.player.lifeSteal) {
+            game.player.currentHealth = game.player.currentHealth + Math.floor(playerDamage/2) <= game.player.maxHealth ? game.player.currentHealth + Math.floor(playerDamage/2) : game.player.maxHealth
+        }
+    }
+
+    /* If enemy did'nt die, it deal damage */
     if (enemy.currentHealth > 0) {
         /* Enemy attacks the player */
-        /* Todo: dodge, damage reduction, if etc, is player dead */
         var enemyDamage = Math.floor(Math.random() * ((enemy.attackHigh + 1) - enemy.attackLow)) + enemy.attackLow
+
         if (Math.random() <= game.player.dodge/100) {
+            /* Attack dodged */
             return
         } else {
+            /* Enemy attack, damage redu caluclated here aswell */
             game.player.currentHealth -= Math.floor(enemyDamage * ( 1 - game.player.damageReduction/100)) !== 0 ? Math.floor(enemyDamage * ( 1 - game.player.damageReduction/100)) : enemyDamage
 
-            console.log(game.player.currentHealth)
+            /* Player dies */
             if (game.player.currentHealth <= 0) {
                 game.player.isAlive = false
             }
         }
-
-
     } else {
-        /* Enemy dies */
         var enemies = {
-            "bat": () => {
-                game.player.currentExperience + 20 * game.level < game.player.maxExperience ? game.player.currentExperience += 20 : levelUp(game.player, 20)
-            },
-            "skeleton": () => {
-                game.player.currentExperience + 30 * game.level < game.player.maxExperience ? game.player.currentExperience += 30 : levelUp(game.player, 30)
-            },
-            "miniboss": () => {
-                game.player.currentExperience + 50 * game.level < game.player.maxExperience ? game.player.currentExperience += 50 : levelUp(game.player, 50)
-            }
+            "bat": () => drop(game, "bat"),
+            "skeleton": () => drop(game, "skeleton"),
+            "miniboss": () => drop(game, "miniboss")
         }
-        enemies[enemy.name]()
+
+        /* Enemy dies */
         game.gameState[y][x] = 1
+
+        /* Enemy drops exp and items */
+        enemies[enemy.name]()
+
     }
 
-
-    /* Level up */
-    function levelUp(player, experienceGain) {
-        player.maxHealth += 10 * player.level
-        player.currentHealth = player.maxHealth
-        player.attackLow += 4
-        player.attackHigh += 6
-        player.currentExperience = player.maxExperience - (player.currentExperience + experienceGain)
-        player.maxExperience += 50 * player.level
-        player.level += 1
-    }
 }
