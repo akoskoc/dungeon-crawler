@@ -27,8 +27,8 @@ export default function gameReducer(state = data.game, action) {
         case "PLAYER_DEATH":
             return Object.assign({}, state, {
                 gameState: [],
-                level: 0,
-                currentLevel: 0,
+                level: 1,
+                currentLevel: 1,
                 player: Object.assign({}, data.game.player)
 
             })

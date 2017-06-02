@@ -125,8 +125,8 @@ const data = {
             }
         },
         epicItems,
-        level: 0,
-        currentLevel: 0
+        level: 4,
+        currentLevel: 4
     },
     maps,
     sprites

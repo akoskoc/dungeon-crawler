@@ -82,7 +82,7 @@ class CanvasComponent extends React.Component {
                     this.props.game.player)
 
             /* Fill gameState */
-            this.props.maps[this.props.game.level].forEach((row, y) => {
+            this.props.maps[this.props.game.level - 1].forEach((row, y) => {
                 initGameState.push([])
                 row.forEach((tile, x) => {
                     pickTile(tile, initGameState, y, x)
@@ -108,7 +108,7 @@ class CanvasComponent extends React.Component {
         }
 
         /* Display map */
-        this.props.maps[this.props.game.level].forEach((row, y) => {
+        this.props.maps[this.props.game.level - 1].forEach((row, y) => {
             row.forEach((tile, x) => {
                 fillBackground(tile, c, y, x)
             })
