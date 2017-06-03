@@ -36,20 +36,36 @@ class CanvasComponent extends React.Component {
                     }
             })
             canvas.addEventListener("click", (event) => {
-                if(this.props.game.player.isAlive === false) {
+
+                if(this.props.game.player.isAlive === false || this.props.game.won) {
                     this.props.playerDeath()
+                } else {
+                    var X = event.clientX - ((window.innerWidth - canvas.width)/2)
+                    var Y = event.clientY - 115
+                    if (X < 100) {
+                        this.props.playerRound("ArrowLeft")
+                    } else if (X > 300) {
+                        this.props.playerRound("ArrowRight")
+                    } else if (Y < 100) {
+                        this.props.playerRound("ArrowUp")
+                    } else if (Y > 300) {
+                        this.props.playerRound("ArrowDown")
+                    }
                 }
             })
         }
     }
 
     componentDidUpdate() {
-        if (this.props.game.player.isAlive === false) {
+        if (this.props.game.won) {
+            var c = this.refs.canvas.getContext("2d")
+            c.drawImage(this.props.sprites.won.img, 0, 0)
+        } else if (this.props.game.player.isAlive === false) {
             /* Player death */
             var c = this.refs.canvas.getContext("2d")
             c.drawImage(this.props.sprites.dead.img, 0, 0)
         } else if (this.props.game.gameState.length === 0) {
-            /* Player died need reset */
+            /* Reset game */
             this.draw(true)
         } else if (this.props.game.level !== this.props.game.currentLevel ) {
             /* New level */

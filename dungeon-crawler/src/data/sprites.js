@@ -12,7 +12,8 @@ const sprites = {
     door: new Sprite("./img/sprites/door.png"),
     miniboss: new Sprite("./img/sprites/miniboss.png"),
     finalboss: new Sprite("./img/sprites/finalboss.png"),
-    dead: new Sprite("./img/background/died.png")
+    dead: new Sprite("./img/background/died.png"),
+    won: new Sprite("./img/background/won.png")
 }
 
 function Sprite(url) {

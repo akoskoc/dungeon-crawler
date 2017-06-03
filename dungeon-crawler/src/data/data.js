@@ -121,6 +121,7 @@ const data = {
                 ]
             }
         },
+        won: false,
         log: ["", "", "", "", ""],
         epicItems,
         level: 1,

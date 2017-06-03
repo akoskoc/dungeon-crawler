@@ -26,6 +26,7 @@ export default function gameReducer(state = data.game, action) {
         /* Reset game on player death */
         case "PLAYER_DEATH":
             return Object.assign({}, state, {
+                won: false,
                 gameState: [],
                 level: 1,
                 currentLevel: 1,
@@ -282,10 +283,8 @@ function fight(game, y, x, enemy) {
             /* Enemy drops exp and items */
             enemies[enemy.name]()
         } else {
-            game.gameState[y][x] = 1
-            /* LOG */
-            game.log.unshift("You have defeated the final boss.")
-            game.log.pop()
+            /* Won */
+            game.won = true
         }
 
     }
