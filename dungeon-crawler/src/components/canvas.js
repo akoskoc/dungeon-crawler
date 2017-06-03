@@ -40,8 +40,8 @@ class CanvasComponent extends React.Component {
                 if(this.props.game.player.isAlive === false || this.props.game.won) {
                     this.props.playerDeath()
                 } else {
-                    var X = event.clientX - ((window.innerWidth - canvas.width)/2)
-                    var Y = event.clientY - 115
+                    var X = event.clientX - canvas.getBoundingClientRect().left
+                    var Y = event.clientY - canvas.getBoundingClientRect().top
                     if (X < 100) {
                         this.props.playerRound("ArrowLeft")
                     } else if (X > 300) {
