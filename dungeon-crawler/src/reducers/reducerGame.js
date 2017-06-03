@@ -205,12 +205,15 @@ function fight(game, y, x, enemy) {
             "skeleton": () => drop(game, "skeleton"),
             "miniboss": () => drop(game, "miniboss")
         }
+        if (enemy.name !== "finalboss") {
+            /* Enemy dies */
+            game.gameState[y][x] = 1
 
-        /* Enemy dies */
-        game.gameState[y][x] = 1
-
-        /* Enemy drops exp and items */
-        enemies[enemy.name]()
+            /* Enemy drops exp and items */
+            enemies[enemy.name]()
+        } else {
+            console.log("You won")
+        }
 
     }
 
@@ -229,6 +232,9 @@ function portal(game) {
         }
     }
     if (!miniboss) {
+        if (game.level === 4) {
+            game.finalboss.number += 1
+        }
         game.level += 1
     } else {
         console.log("you have to kill the miniboss on this level")

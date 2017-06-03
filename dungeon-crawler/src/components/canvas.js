@@ -97,7 +97,7 @@ class CanvasComponent extends React.Component {
                     "2": () => initGameState[y].push(0),
                     "3": () => initGameState[y].push(0),
                     "4": () => initGameState[y].push(2),
-                    "5": () => initGameState[y].push(1)
+                    "5": () => initGameState[y].push(1),
                 }
                 pickTile[tile.toString()]()
             }
