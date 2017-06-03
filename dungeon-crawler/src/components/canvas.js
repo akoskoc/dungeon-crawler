@@ -29,8 +29,16 @@ class CanvasComponent extends React.Component {
                     || event.key === "ArrowDown"
                     || event.key === "ArrowLeft"
                     || event.key === "ArrowRight") {
-                        this.props.playerRound(event.key)
+                        event.preventDefault()
+                        if(this.props.game.player.isAlive === true) {
+                            this.props.playerRound(event.key)
+                        }
                     }
+            })
+            canvas.addEventListener("click", (event) => {
+                if(this.props.game.player.isAlive === false) {
+                    this.props.playerDeath()
+                }
             })
         }
     }
@@ -38,7 +46,8 @@ class CanvasComponent extends React.Component {
     componentDidUpdate() {
         if (this.props.game.player.isAlive === false) {
             /* Player death */
-            this.props.playerDeath()
+            var c = this.refs.canvas.getContext("2d")
+            c.drawImage(this.props.sprites.dead.img, 0, 0)
         } else if (this.props.game.gameState.length === 0) {
             /* Player died need reset */
             this.draw(true)

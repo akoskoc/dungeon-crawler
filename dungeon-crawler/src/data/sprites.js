@@ -11,7 +11,8 @@ const sprites = {
     portal: new Sprite("./img/sprites/portal.png"),
     door: new Sprite("./img/sprites/door.png"),
     miniboss: new Sprite("./img/sprites/miniboss.png"),
-    finalboss: new Sprite("./img/sprites/finalboss.png")
+    finalboss: new Sprite("./img/sprites/finalboss.png"),
+    dead: new Sprite("./img/background/died.png")
 }
 
 function Sprite(url) {

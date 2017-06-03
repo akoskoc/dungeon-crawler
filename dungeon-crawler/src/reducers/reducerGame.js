@@ -147,10 +147,12 @@ function openChest(key, game, y, x) {
     var takeItem = {
         "weapon": () => {
             if (game.player.currentWeapon < 3) {
+                /* LOG */
                 game.log.unshift("Your weapon has been upgraded.")
                 game.log.pop()
                 game.player.currentWeapon += 1
             } else {
+                /* LOG */
                 game.log.unshift("Your weapon is fully upgraded, better luck next time.")
                 game.log.pop()
                 game.player.currentWeapon = 3
@@ -158,19 +160,22 @@ function openChest(key, game, y, x) {
 
         },
         "strength": () => {
-            game.log.unshift("You\'ve found a potion of strength. Attack increased.")
+            /* LOG */
+            game.log.unshift("You've found a potion of strength. Attack increased.")
             game.log.pop()
             game.player.attackLow += 4
             game.player.attackHigh += 6
         },
         "vitality": () => {
-            game.log.unshift("You\'ve found a potion of vitality. + 20 health.")
+            /* LOG */
+            game.log.unshift("You've found a potion of vitality. + 20 health.")
             game.log.pop()
             game.player.maxHealth += 20
             game.player.currentHealth += 20
         },
         "agility": () => {
-            game.log.unshift("You\'ve found a potion of agility. + 2% dodge chance.")
+            /* LOG */
+            game.log.unshift("You've found a potion of agility. + 2% dodge chance.")
             game.log.pop()
             game.player.dodge += 2
         }
@@ -245,7 +250,8 @@ function fight(game, y, x, enemy) {
 
         if (Math.random() <= game.player.dodge/100) {
             /* Attack dodged */
-            game.log.unshift("You dodged " + enemy.name + "\'s attack.")
+            /* LOG */
+            game.log.unshift("You dodged " + enemy.name + "'s attack.")
             game.log.pop()
             return
         } else {
@@ -277,6 +283,7 @@ function fight(game, y, x, enemy) {
             enemies[enemy.name]()
         } else {
             game.gameState[y][x] = 1
+            /* LOG */
             game.log.unshift("You have defeated the final boss.")
             game.log.pop()
         }
@@ -303,6 +310,7 @@ function portal(game) {
         }
         game.level += 1
     } else {
+        /* LOG */
         game.log.unshift("Find and eliminate the Werewolf to go to the next level.")
         game.log.pop()
     }

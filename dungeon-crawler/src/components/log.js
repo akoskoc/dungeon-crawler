@@ -5,7 +5,7 @@ class LogComponent extends React.Component {
     render() {
         return(
             <div className="log">
-                {this.props.game.log.map((text) => <div>{text}</div>)}
+                {this.props.game.log.map((text, index) => <div key={index}>{text}</div>)}
             </div>
         )
     }
