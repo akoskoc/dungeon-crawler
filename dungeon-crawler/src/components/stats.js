@@ -34,7 +34,7 @@ class StatsComponent extends React.Component {
                         <span className="tooltip">Dodge chance</span>
                     </div>
                     <div className="img-container">
-                        <img src="./img/icons/sword.png" alt="attack"/> {this.props.game.player.attackLow}-{this.props.game.player.attackHigh}
+                        <img src="./img/icons/sword.png" alt="attack"/> {this.props.game.player.attackLow + this.props.game.player.items.weapon[this.props.game.player.currentWeapon]}-{this.props.game.player.attackHigh + this.props.game.player.items.weapon[this.props.game.player.currentWeapon]}
                         <span className="tooltip">Attack</span>
                     </div>
                     <div className="img-container">

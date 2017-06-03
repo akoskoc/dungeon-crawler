@@ -6,8 +6,8 @@ const data = {
     game: {
         size: 400,
         gameState: [],
-        skeleton: {
-            name: "skeleton",
+        Skeleton: {
+            name: "Skeleton",
             health: 60,
             currentHealth: 60,
             attackLow: 6,
@@ -15,8 +15,8 @@ const data = {
             number: 3,
             dropTable: {
                 experience: {
-                    effect: (game, giveExperience, levelUp) => {
-                        giveExperience(game, 30, levelUp)
+                    effect: (game, giveExperience, levelUp, monsterName) => {
+                        giveExperience(game, 30, levelUp, monsterName)
                     },
                     chance: 100
                 },
@@ -24,12 +24,12 @@ const data = {
                     effect: (game, giveItem) => {
                         giveItem(game)
                     },
-                    chance: 2
+                    chance: 1
                 }
             }
         },
-        bat: {
-            name: "bat",
+        Bat: {
+            name: "Bat",
             health: 40,
             currentHealth: 40,
             attackLow: 4,
@@ -37,8 +37,8 @@ const data = {
             number:8,
             dropTable: {
                 experience: {
-                    effect: (game, giveExperience, levelUp) => {
-                        giveExperience(game, 20, levelUp)
+                    effect: (game, giveExperience, levelUp, monsterName) => {
+                        giveExperience(game, 20, levelUp, monsterName)
                     },
                     chance: 100
                 },
@@ -46,12 +46,12 @@ const data = {
                     effect: (game, giveItem) => {
                         giveItem(game)
                     },
-                    chance: 2
+                    chance: 0.5
                 }
             }
         },
-        miniboss: {
-            name: "miniboss",
+        Werewolf: {
+            name: "Werewolf",
             health: 100,
             currentHealth: 100,
             attackLow: 10,
@@ -59,8 +59,8 @@ const data = {
             number: 1,
             dropTable: {
                 experience: {
-                    effect: (game, giveExperience, levelUp) => {
-                        giveExperience(game, 50, levelUp)
+                    effect: (game, giveExperience, levelUp, monsterName) => {
+                        giveExperience(game, 50, levelUp, monsterName)
                     },
                     chance: 100
                 },
@@ -72,8 +72,8 @@ const data = {
                 }
             }
         },
-        finalboss: {
-            name: "finalboss",
+        Boss: {
+            name: "Boss",
             health: 100,
             currentHealth: 100,
             attackLow: 10,
@@ -88,7 +88,7 @@ const data = {
                 "agility",
                 "weapon"
             ],
-            number:4
+            number: 4
         },
         potion: {
             name: "potion",
@@ -103,9 +103,6 @@ const data = {
             attackHigh: 2,
             currentWeapon: 0,
             vision: 4,
-            vitality: 0,
-            strength: 0,
-            agility: 0,
             number: 1,
             level: 1,
             currentExperience: 0,
@@ -124,6 +121,7 @@ const data = {
                 ]
             }
         },
+        log: ["", "", "", "", ""],
         epicItems,
         level: 1,
         currentLevel: 1

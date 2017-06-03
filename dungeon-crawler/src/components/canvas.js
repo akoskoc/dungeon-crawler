@@ -73,12 +73,12 @@ class CanvasComponent extends React.Component {
         if (init) {
             var initGameState = [],
                 population = new Population(
-                    this.props.game.skeleton,
-                    this.props.game.bat,
+                    this.props.game.Skeleton,
+                    this.props.game.Bat,
                     this.props.game.potion,
                     this.props.game.chest,
-                    this.props.game.miniboss,
-                    this.props.game.finalboss,
+                    this.props.game.Werewolf,
+                    this.props.game.Boss,
                     this.props.game.player)
 
             /* Fill gameState */
@@ -147,12 +147,12 @@ class CanvasComponent extends React.Component {
         /* Switch */
         function fillObjects(name, c, y, x) {
             var pickTile = {
-                "skeleton": () => c.drawImage(skeleton, 16 * x, 16 * y),
-                "bat": () => c.drawImage(bat, 16 * x, 16 * y),
+                "Skeleton": () => c.drawImage(skeleton, 16 * x, 16 * y),
+                "Bat": () => c.drawImage(bat, 16 * x, 16 * y),
                 "potion": () => c.drawImage(potion, 16 * x, 16 * y),
                 "chest": () => c.drawImage(chest, 16 * x, 16 * y),
-                "miniboss": () => c.drawImage(miniboss, 16 * x, 16 * y),
-                "finalboss": () => c.drawImage(finalboss, 16 * x, 16 * y),
+                "Werewolf": () => c.drawImage(miniboss, 16 * x, 16 * y),
+                "Boss": () => c.drawImage(finalboss, 16 * x, 16 * y),
                 "player": () => c.drawImage(player, 16 * x, 16 * y),
                 "default": () => {return}
             }
@@ -162,7 +162,6 @@ class CanvasComponent extends React.Component {
 
     /* Render */
     render() {
-        console.log(this.props.game.player)
         return(
             <canvas ref="canvas" tabIndex="1"></canvas>
         )
@@ -187,7 +186,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(CanvasComponent)
 
 
 /* Constructors */
-function Population(skeleton, bat, potion, chest, miniboss, finalboss, player) {
+function Population(skeleton, bat, potion, chest, werewolf, boss, player) {
     this.skeleton = Object.assign({}, skeleton, {
         number: skeleton.number + (Math.floor(Math.random() * 3) - 1)
     })
@@ -200,8 +199,8 @@ function Population(skeleton, bat, potion, chest, miniboss, finalboss, player) {
     this.chest = Object.assign({}, chest, {
         number: chest.number + (Math.floor(Math.random() * 3) - 1)
     })
-    this.miniboss = Object.assign({}, miniboss)
-    this.finalboss = Object.assign({}, finalboss)
+    this.werewolf = Object.assign({}, werewolf)
+    this.boss = Object.assign({}, boss)
     this.player = Object.assign({}, player)
 }
 

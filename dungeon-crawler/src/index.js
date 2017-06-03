@@ -11,6 +11,8 @@ import reducer from "./reducers/combineReducers"
 /* Components */
 import CanvasComponent from "./components/canvas"
 import StatsComponent from "./components/stats"
+import LogComponent from "./components/log"
+
 
 const store = createStore(reducer);
 
@@ -21,6 +23,7 @@ class App extends React.Component {
             <div>
                 <StatsComponent />
                 <CanvasComponent />
+                <LogComponent />
             </div>
         )
     }

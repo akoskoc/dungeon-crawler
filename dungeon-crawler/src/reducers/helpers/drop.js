@@ -1,10 +1,14 @@
-function giveExperience(game, value, levelUp) {
-    game.player.currentExperience + value * game.level < game.player.maxExperience ? game.player.currentExperience += value : levelUp(game.player, value)
+function giveExperience(game, value, levelUp, monsterName) {
+    game.log.unshift(monsterName + " grants " + value * game.level + " experience.")
+    game.log.pop()
+    game.player.currentExperience + value * game.level < game.player.maxExperience ? game.player.currentExperience += value * game.level : levelUp(game.player, value * game.level)
 }
 
 function giveItem(game) {
 
     var num = Math.floor(Math.random() * game.epicItems.length)
+
+
 
     game.epicItems[num](game)
 
@@ -27,7 +31,7 @@ export function drop(game, monsterName) {
         if (Math.random() <= game[monsterName].dropTable[item].chance/100) {
             var effects = {
                 experience: () => {
-                    game[monsterName].dropTable.experience.effect(game, giveExperience, levelUp)
+                    game[monsterName].dropTable.experience.effect(game, giveExperience, levelUp, monsterName)
                 },
                 item: () => giveItem(game)
             }

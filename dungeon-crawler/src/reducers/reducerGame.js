@@ -74,9 +74,10 @@ function checkMove(key, game, y, x) {
         var currentObject = {
             "1": () => move(key, game, y, x),
             "2": () => portal(game),
-            "skeleton": () => fight(game, y, x, object),
-            "bat": () => fight(game, y, x, object),
-            "miniboss": () => fight(game, y, x, object),
+            "Skeleton": () => fight(game, y, x, object),
+            "Bat": () => fight(game, y, x, object),
+            "Werewolf": () => fight(game, y, x, object),
+            "Boss": () => fight(game, y, x, object),
             "potion": () => takePotion(key, game, y, x),
             "chest": () => openChest(key, game, y, x),
             "default": () => {return}
@@ -117,10 +118,24 @@ function takePotion(key, game, y, x) {
 
     /* Restore health */
     if (game.player.currentHealth < game.player.maxHealth) {
+
+        /* LOG */
+        game.log.unshift("Healing potion restored " +
+        (game.player.maxHealth - game.player.currentHealth >= game.potion.restore ? game.potion.restore : game.player.maxHealth - game.player.currentHealth)
+         + " life.")
+
         game.player.currentHealth = game.player.currentHealth
         + game.potion.restore < game.player.maxHealth
         ? game.player.currentHealth + game.potion.restore
         : game.player.maxHealth
+        game.log.pop()
+
+    } else {
+
+        /* LOG */
+        game.log.unshift("Healing potion restored " + 0
+         + " life.")
+        game.log.pop()
     }
 
     /* Move */
@@ -130,21 +145,33 @@ function takePotion(key, game, y, x) {
 /* Open chest */
 function openChest(key, game, y, x) {
     var takeItem = {
-        "weapon": () => game.player.currentWeapon < 4
-            ? game.player.currentWeapon += 1
-            : game.player.currentWeapon,
+        "weapon": () => {
+            if (game.player.currentWeapon < 3) {
+                game.log.unshift("Your weapon has been upgraded.")
+                game.log.pop()
+                game.player.currentWeapon += 1
+            } else {
+                game.log.unshift("Your weapon is fully upgraded, better luck next time.")
+                game.log.pop()
+                game.player.currentWeapon = 3
+            }
+
+        },
         "strength": () => {
-            game.player.strength += 1
-            game.player.attackLow = 4 * game.player.strength
-            game.player.attackHigh = 6 * game.player.strength
+            game.log.unshift("You\'ve found a potion of strength. Attack increased.")
+            game.log.pop()
+            game.player.attackLow += 4
+            game.player.attackHigh += 6
         },
         "vitality": () => {
-            game.player.vitality += 1
-            game.player.maxHealth = 100 + (20 * game.player.vitality)
+            game.log.unshift("You\'ve found a potion of vitality. + 20 health.")
+            game.log.pop()
+            game.player.maxHealth += 20
             game.player.currentHealth += 20
         },
         "agility": () => {
-            game.player.agility += 1
+            game.log.unshift("You\'ve found a potion of agility. + 2% dodge chance.")
+            game.log.pop()
             game.player.dodge += 2
         }
     }
@@ -157,7 +184,6 @@ function openChest(key, game, y, x) {
 /* Fight */
 function fight(game, y, x, enemy) {
     /* Player attacks the enemy */
-    /* Todo: vampirism, double attack, if etc */
     var playerDamage = game.player.items.weapon[game.player.currentWeapon]
     + Math.floor(Math.random()
     * ((game.player.attackHigh + 1) - game.player.attackLow))
@@ -168,18 +194,48 @@ function fight(game, y, x, enemy) {
     /* Damage to enemy */
     enemy.currentHealth -= playerDamage
 
+    /* LOG */
+    var playerDamageLog = "You hit " + enemy.name + " for " + playerDamage + " damage"
+
     /* LifeSteal */
     if (game.player.lifeSteal) {
+
+        /* LOG */
+        playerDamageLog = playerDamageLog.concat(" and steal " +
+        (Math.floor(playerDamage/2) + game.player.currentHealth <= game.player.maxHealth ? Math.floor(playerDamage/2) : game.player.maxHealth - game.player.currentHealth)
+        + " life")
+
         game.player.currentHealth = game.player.currentHealth + Math.floor(playerDamage/2) <= game.player.maxHealth ? game.player.currentHealth + Math.floor(playerDamage/2) : game.player.maxHealth
+
+
+
     }
+
+    /* LOG */
+    game.log.unshift(playerDamageLog.concat("."))
+    game.log.pop()
+
 
     /* Double attack */
     if (game.player.doubleAttack && Math.floor(Math.random() * 2) > 0) {
         enemy.currentHealth -= playerDamage
 
+        /* LOG */
+        playerDamageLog = "You double attack " + enemy.name + " for " + playerDamage + " damage"
+
         if (game.player.lifeSteal) {
+
+            /* LOG */
+            playerDamageLog = playerDamageLog.concat(" and steal " +
+            (Math.floor(playerDamage/2) + game.player.currentHealth <= game.player.maxHealth ? Math.floor(playerDamage/2) : game.player.maxHealth - game.player.currentHealth)
+            + " life")
+
             game.player.currentHealth = game.player.currentHealth + Math.floor(playerDamage/2) <= game.player.maxHealth ? game.player.currentHealth + Math.floor(playerDamage/2) : game.player.maxHealth
         }
+
+        /* LOG */
+        game.log.unshift(playerDamageLog.concat("."))
+        game.log.pop()
     }
 
     /* If enemy did'nt die, it deal damage */
@@ -189,30 +245,40 @@ function fight(game, y, x, enemy) {
 
         if (Math.random() <= game.player.dodge/100) {
             /* Attack dodged */
+            game.log.unshift("You dodged " + enemy.name + "\'s attack.")
+            game.log.pop()
             return
         } else {
             /* Enemy attack, damage redu caluclated here aswell */
             game.player.currentHealth -= Math.floor(enemyDamage * ( 1 - game.player.damageReduction/100)) !== 0 ? Math.floor(enemyDamage * ( 1 - game.player.damageReduction/100)) : enemyDamage
 
+            game.log.unshift(enemy.name + " hits you for " +
+            (Math.floor(enemyDamage * ( 1 - game.player.damageReduction/100)) !== 0 ? Math.floor(enemyDamage * ( 1 - game.player.damageReduction/100)) : enemyDamage)
+            + ".")
+            game.log.pop()
+
             /* Player dies */
             if (game.player.currentHealth <= 0) {
+                game.log.unshift(enemy.name + " killed you.")
+                game.log.pop()
                 game.player.isAlive = false
             }
         }
     } else {
         var enemies = {
-            "bat": () => drop(game, "bat"),
-            "skeleton": () => drop(game, "skeleton"),
-            "miniboss": () => drop(game, "miniboss")
+            "Bat": () => drop(game, "Bat"),
+            "Skeleton": () => drop(game, "Skeleton"),
+            "Werewolf": () => drop(game, "Werewolf")
         }
-        if (enemy.name !== "finalboss") {
+        if (enemy.name !== "Boss") {
             /* Enemy dies */
             game.gameState[y][x] = 1
-
             /* Enemy drops exp and items */
             enemies[enemy.name]()
         } else {
-            console.log("You won")
+            game.gameState[y][x] = 1
+            game.log.unshift("You have defeated the final boss.")
+            game.log.pop()
         }
 
     }
@@ -225,7 +291,7 @@ function portal(game) {
     for (var i = 0; i < game.gameState.length; i += 1) {
         for (var k = 0; k < game.gameState[i].length; k += 1) {
             if (typeof game.gameState[i][k] === "object") {
-                if (game.gameState[i][k].name === "miniboss") {
+                if (game.gameState[i][k].name === "Werewolf") {
                     miniboss = true
                 }
             }
@@ -233,10 +299,11 @@ function portal(game) {
     }
     if (!miniboss) {
         if (game.level === 4) {
-            game.finalboss.number += 1
+            game.Boss.number += 1
         }
         game.level += 1
     } else {
-        console.log("you have to kill the miniboss on this level")
+        game.log.unshift("Find and eliminate the Werewolf to go to the next level.")
+        game.log.pop()
     }
 }

@@ -3,17 +3,26 @@
   margin: 0; }
 
 body {
-  text-align: center; }
+  text-align: center;
+  font-family: "arial"; }
 
 #root {
   margin-top: 50px;
   display: inline-block; }
+  #root .log {
+    font-size: 14px;
+    background-color: black;
+    color: white;
+    padding-left: 5px;
+    border: 3px solid black;
+    text-align: left;
+    line-height: 20px;
+    height: 100px; }
   #root canvas {
     border: 3px solid black; }
   #root .row {
     padding: 5px 0px;
-    display: flex;
-    width: 400px; }
+    display: flex; }
     #root .row .img-container {
       cursor: default;
       flex-grow: 1;
