@@ -268,9 +268,9 @@ function fight(game, y, x, enemy) {
             /* Enemy attack, damage redu caluclated here aswell */
             game.player.currentHealth -= Math.floor(enemyDamage * ( 1 - game.player.damageReduction/100)) !== 0 ? Math.floor(enemyDamage * ( 1 - game.player.damageReduction/100)) : enemyDamage
 
-            game.log.unshift(enemy.name + " hits you for " +
+            game.log.unshift(enemy.name + " deals " +
             (Math.floor(enemyDamage * ( 1 - game.player.damageReduction/100)) !== 0 ? Math.floor(enemyDamage * ( 1 - game.player.damageReduction/100)) : enemyDamage)
-            + ".")
+            + " damage to you.")
             game.log.pop()
 
             /* Player dies */
