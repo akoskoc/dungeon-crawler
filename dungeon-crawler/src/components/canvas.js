@@ -40,15 +40,17 @@ class CanvasComponent extends React.Component {
                 if(this.props.game.player.isAlive === false || this.props.game.won) {
                     this.props.playerDeath()
                 } else {
+                    var width = canvas.getBoundingClientRect().right - canvas.getBoundingClientRect().left
                     var X = event.clientX - canvas.getBoundingClientRect().left
                     var Y = event.clientY - canvas.getBoundingClientRect().top
-                    if (X < 100) {
+
+                    if (X < width / 4) {
                         this.props.playerRound("ArrowLeft")
-                    } else if (X > 300) {
+                    } else if (X > width / 4 * 3) {
                         this.props.playerRound("ArrowRight")
-                    } else if (Y < 100) {
+                    } else if (Y < width / 4) {
                         this.props.playerRound("ArrowUp")
-                    } else if (Y > 300) {
+                    } else if (Y > width / 4 * 3) {
                         this.props.playerRound("ArrowDown")
                     }
                 }
@@ -98,6 +100,7 @@ class CanvasComponent extends React.Component {
         if (init) {
             var initGameState = [],
                 population = new Population(
+                    this.props.game.level,
                     this.props.game.Skeleton,
                     this.props.game.Bat,
                     this.props.game.potion,
@@ -132,12 +135,40 @@ class CanvasComponent extends React.Component {
             this.props.setGameState(initGameState)
         }
 
-        /* Display map */
-        this.props.maps[this.props.game.level - 1].forEach((row, y) => {
-            row.forEach((tile, x) => {
-                fillBackground(tile, c, y, x)
+
+
+        /* Darkness */
+        c.fillRect(0, 0, canvas.width, canvas.height)
+        var playerPos = {
+            y: null,
+            x: null
+        }
+
+        /* Calc position of player to determine the vision */
+        for (var y = 0; y < this.props.game.gameState.length; y += 1) {
+            for (var x = 0; x < this.props.game.gameState[y].length; x += 1) {
+                if (typeof this.props.game.gameState[y][x] === "object") {
+                    if (this.props.game.gameState[y][x].name === "player") {
+                        playerPos.y = y
+                        playerPos.x = x
+                    }
+                }
+            }
+        }
+
+
+        /* Draw stuff if in vision of player */
+        if(playerPos.x) {
+            vision(playerPos.x, playerPos.y, this.props.game.player.vision).forEach((position) => {
+                if (typeof this.props.maps[this.props.game.level - 1][position.y][position.x] === "number") {
+                    fillBackground(this.props.maps[this.props.game.level - 1][position.y][position.x], c, position.y, position.x)
+                }
+                fillObjects(this.props.game.gameState[position.y][position.x].name , c, position.y, position.x)
             })
-        })
+
+        }
+
+
 
         /* Switch */
         function fillBackground(tile, c, y, x) {
@@ -161,13 +192,6 @@ class CanvasComponent extends React.Component {
             pickTile[tile.toString()]()
         }
 
-
-        /* Draw objects */
-        this.props.game.gameState.forEach((row, y) => {
-            row.forEach((item, x) => {
-                fillObjects(item.name, c, y, x)
-            })
-        })
 
         /* Switch */
         function fillObjects(name, c, y, x) {
@@ -211,20 +235,34 @@ export default connect(mapStateToProps, mapDispatchToProps)(CanvasComponent)
 
 
 /* Constructors */
-function Population(skeleton, bat, potion, chest, werewolf, boss, player) {
+function Population(level, skeleton, bat, potion, chest, werewolf, boss, player) {
     this.skeleton = Object.assign({}, skeleton, {
-        number: skeleton.number + (Math.floor(Math.random() * 3) - 1)
+        health: Math.floor(skeleton.health * ( 0.5 + level / 2 )),
+        currentHealth: Math.floor(skeleton.health * ( 0.5 + level / 2 )),
+        attackLow: Math.floor(skeleton.attackLow * ( 0.5 + level / 2 )),
+        attackHigh: Math.floor(skeleton.attackHigh * ( 0.5 + level / 2 )),
+        number: skeleton.number + (Math.floor(Math.random() * 3) - 1) + (level * 2)
     })
     this.bat = Object.assign({}, bat, {
-        number: bat.number + (Math.floor(Math.random() * 3) - 1)
+        health: Math.floor(bat.health * ( 0.5 + level / 2 )),
+        currentHealth: Math.floor(bat.health * ( 0.5 + level / 2 )),
+        attackLow: Math.floor(bat.attackLow * ( 0.5 + level / 2 )),
+        attackHigh: Math.floor(bat.attackHigh * ( 0.5 + level / 2 )),
+        number: bat.number + (Math.floor(Math.random() * 3) - 1) + (level * 2)
     })
     this.potion = Object.assign({}, potion, {
+        restor: Math.floor(potion.restore * ( 0.75 + level / 4 )),
         number: potion.number + (Math.floor(Math.random() * 3) - 1)
     })
     this.chest = Object.assign({}, chest, {
-        number: chest.number + (Math.floor(Math.random() * 3) - 1)
+        number: chest.number + (Math.floor(Math.random() * 3) - 1) + level
     })
-    this.werewolf = Object.assign({}, werewolf)
+    this.werewolf = Object.assign({}, werewolf, {
+        health: Math.floor(werewolf.health * ( 0.5 + level / 2 )),
+        currentHealth: Math.floor(werewolf.health * ( 0.5 + level / 2 )),
+        attackLow: Math.floor(werewolf.attackLow * ( 0.5 + level / 2 )),
+        attackHigh: Math.floor(werewolf.attackHigh * ( 0.5 + level / 2 ))
+    })
     this.boss = Object.assign({}, boss)
     this.player = Object.assign({}, player)
 }
@@ -249,4 +287,20 @@ function placeObjects(gameState, population) {
     }
 
     return gameState
+}
+
+/* Calc vision */
+function vision(x, y, vision) {
+    var rtn = []
+    for (var i = - vision; i < vision + 1; i += 1) {
+        for (var k = -vision + Math.abs(i); k < vision - Math.abs(i) + 1; k += 1) {
+            if ((y + i >= 0 && y + i <= 24) && (x + k >= 0 && x + k <= 24)) {
+                rtn.push({
+                    y: y + i,
+                    x: x + k
+                })
+            }
+        }
+    }
+    return rtn
 }

@@ -1,7 +1,8 @@
 * {
   padding: 0;
   margin: 0;
-  user-select: none; }
+  user-select: none;
+  box-sizing: border-box; }
 
 body {
   text-align: center;
@@ -18,7 +19,7 @@ body {
     border: 3px solid black;
     text-align: left;
     line-height: 20px;
-    height: 100px; }
+    height: 105px; }
   #root canvas {
     border: 3px solid black; }
   #root .row {
@@ -50,5 +51,21 @@ body {
     #root .row:nth-child(2) {
       border-left: 3px solid black;
       border-right: 3px solid black; }
+
+@media (max-width: 400px) {
+  body {
+    font-size: 12px !important; }
+    body img {
+      width: 12px; }
+
+  canvas {
+    max-width: 300px !important; }
+
+  .log {
+    max-width: 300px !important;
+    font-size: 12px !important; }
+
+  .row {
+    max-width: 300px !important; } }
 
 /*# sourceMappingURL=main.css.map */

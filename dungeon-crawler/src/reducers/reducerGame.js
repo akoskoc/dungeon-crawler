@@ -27,6 +27,14 @@ export default function gameReducer(state = data.game, action) {
         case "PLAYER_DEATH":
             return Object.assign({}, state, {
                 won: false,
+                Boss: {
+                    name: "Boss",
+                    health: 700,
+                    currentHealth: 700,
+                    attackLow: 40,
+                    attackHigh: 50,
+                    number: 0
+                },
                 gameState: [],
                 level: 1,
                 currentLevel: 1,
@@ -119,15 +127,16 @@ function takePotion(key, game, y, x) {
 
     /* Restore health */
     if (game.player.currentHealth < game.player.maxHealth) {
+        var restore = Math.floor((Math.random()* 5) + (Math.floor(game.potion.restore * ( 0.75 + game.level / 4 ))))
 
         /* LOG */
         game.log.unshift("Healing potion restored " +
-        (game.player.maxHealth - game.player.currentHealth >= game.potion.restore ? game.potion.restore : game.player.maxHealth - game.player.currentHealth)
+        (game.player.maxHealth - game.player.currentHealth >= restore ? restore : game.player.maxHealth - game.player.currentHealth)
          + " life.")
 
         game.player.currentHealth = game.player.currentHealth
-        + game.potion.restore < game.player.maxHealth
-        ? game.player.currentHealth + game.potion.restore
+        + restore < game.player.maxHealth
+        ? game.player.currentHealth + restore
         : game.player.maxHealth
         game.log.pop()
 
@@ -164,8 +173,8 @@ function openChest(key, game, y, x) {
             /* LOG */
             game.log.unshift("You've found a potion of strength. Attack increased.")
             game.log.pop()
-            game.player.attackLow += 4
-            game.player.attackHigh += 6
+            game.player.attackLow += 2
+            game.player.attackHigh += 4
         },
         "vitality": () => {
             /* LOG */
@@ -208,10 +217,10 @@ function fight(game, y, x, enemy) {
 
         /* LOG */
         playerDamageLog = playerDamageLog.concat(" and steal " +
-        (Math.floor(playerDamage/2) + game.player.currentHealth <= game.player.maxHealth ? Math.floor(playerDamage/2) : game.player.maxHealth - game.player.currentHealth)
+        (Math.floor(playerDamage/4) + game.player.currentHealth <= game.player.maxHealth ? Math.floor(playerDamage/4) : game.player.maxHealth - game.player.currentHealth)
         + " life")
 
-        game.player.currentHealth = game.player.currentHealth + Math.floor(playerDamage/2) <= game.player.maxHealth ? game.player.currentHealth + Math.floor(playerDamage/2) : game.player.maxHealth
+        game.player.currentHealth = game.player.currentHealth + Math.floor(playerDamage/4) <= game.player.maxHealth ? game.player.currentHealth + Math.floor(playerDamage/4) : game.player.maxHealth
 
 
 
@@ -233,10 +242,10 @@ function fight(game, y, x, enemy) {
 
             /* LOG */
             playerDamageLog = playerDamageLog.concat(" and steal " +
-            (Math.floor(playerDamage/2) + game.player.currentHealth <= game.player.maxHealth ? Math.floor(playerDamage/2) : game.player.maxHealth - game.player.currentHealth)
+            (Math.floor(playerDamage/4) + game.player.currentHealth <= game.player.maxHealth ? Math.floor(playerDamage/4) : game.player.maxHealth - game.player.currentHealth)
             + " life")
 
-            game.player.currentHealth = game.player.currentHealth + Math.floor(playerDamage/2) <= game.player.maxHealth ? game.player.currentHealth + Math.floor(playerDamage/2) : game.player.maxHealth
+            game.player.currentHealth = game.player.currentHealth + Math.floor(playerDamage/4) <= game.player.maxHealth ? game.player.currentHealth + Math.floor(playerDamage/4) : game.player.maxHealth
         }
 
         /* LOG */
@@ -244,7 +253,7 @@ function fight(game, y, x, enemy) {
         game.log.pop()
     }
 
-    /* If enemy did'nt die, it deal damage */
+    /* If enemy did'nt die, it deals damage */
     if (enemy.currentHealth > 0) {
         /* Enemy attacks the player */
         var enemyDamage = Math.floor(Math.random() * ((enemy.attackHigh + 1) - enemy.attackLow)) + enemy.attackLow

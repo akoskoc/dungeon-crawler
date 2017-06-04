@@ -8,15 +8,15 @@ const data = {
         gameState: [],
         Skeleton: {
             name: "Skeleton",
-            health: 60,
-            currentHealth: 60,
-            attackLow: 6,
-            attackHigh: 8,
-            number: 3,
+            health: 80,
+            currentHealth: 80,
+            attackLow: 10,
+            attackHigh: 12,
+            number: 2,
             dropTable: {
                 experience: {
                     effect: (game, giveExperience, levelUp, monsterName) => {
-                        giveExperience(game, 30, levelUp, monsterName)
+                        giveExperience(game, 25, levelUp, monsterName)
                     },
                     chance: 100
                 },
@@ -30,15 +30,15 @@ const data = {
         },
         Bat: {
             name: "Bat",
-            health: 40,
-            currentHealth: 40,
-            attackLow: 4,
-            attackHigh: 6,
-            number:8,
+            health: 60,
+            currentHealth: 60,
+            attackLow: 5,
+            attackHigh: 8,
+            number:6,
             dropTable: {
                 experience: {
                     effect: (game, giveExperience, levelUp, monsterName) => {
-                        giveExperience(game, 20, levelUp, monsterName)
+                        giveExperience(game, 15, levelUp, monsterName)
                     },
                     chance: 100
                 },
@@ -52,10 +52,10 @@ const data = {
         },
         Werewolf: {
             name: "Werewolf",
-            health: 100,
-            currentHealth: 100,
-            attackLow: 10,
-            attackHigh: 14,
+            health: 150,
+            currentHealth: 150,
+            attackLow: 15,
+            attackHigh: 19,
             number: 1,
             dropTable: {
                 experience: {
@@ -74,10 +74,10 @@ const data = {
         },
         Boss: {
             name: "Boss",
-            health: 100,
-            currentHealth: 100,
-            attackLow: 10,
-            attackHigh: 14,
+            health: 700,
+            currentHealth: 700,
+            attackLow: 40,
+            attackHigh: 50,
             number: 0
         },
         chest: {
@@ -88,12 +88,12 @@ const data = {
                 "agility",
                 "weapon"
             ],
-            number: 4
+            number: 3
         },
         potion: {
             name: "potion",
-            restore: 40,
-            number:7
+            restore: 50,
+            number:5
         },
         player: {
             name: "player",
