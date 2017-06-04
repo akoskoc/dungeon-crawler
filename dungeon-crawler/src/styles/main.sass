@@ -3,13 +3,33 @@
     margin: 0
     user-select: none
     box-sizing: border-box
-
+html
+    height: 100%
 body
+    min-height: 100%
+    position: relative
     text-align: center
     font-family: "arial"
+    padding-bottom: 80px
+    /* Footer */
+    footer
+        padding: 10px
+        color: white
+        background-color: #0a0b17
+        position: absolute
+        bottom: 0
+        left: 0
+        right: 0
+        height: 60px
+        a
+            text-decoration: none
+            color: #1c7048
+        p
+            margin-bottom: 5px
 #root
     margin-top: 50px
     display: inline-block
+    /* Logs */
     .log
         font-size: 14px
         background-color: black
@@ -19,8 +39,11 @@ body
         text-align: left
         line-height: 20px
         height: 105px
+
     canvas
         border: 3px solid black
+
+    /* Stats */
     .row
         padding: 5px 0px
         display: flex
@@ -50,6 +73,8 @@ body
         &:nth-child(2)
             border-left: 3px solid black
             border-right: 3px solid black
+
+
 
 @media (max-width: 400px)
     body
