@@ -11,7 +11,7 @@ class StatsComponent extends React.Component {
                         Level: {this.props.game.player.level}
                     </div>
                     <div className="img-container">
-                        Exp: {this.props.game.player.maxExperience}/{this.props.game.player.currentExperience}
+                        Exp: {this.props.game.player.currentExperience}/{this.props.game.player.maxExperience}
 
                     </div>
                     <div className="img-container">
@@ -22,7 +22,7 @@ class StatsComponent extends React.Component {
                 </div>
                 <div className="row">
                     <div className="img-container">
-                        <img src="./img/icons/heart.png" alt="life"/>  {this.props.game.player.maxHealth}/{this.props.game.player.currentHealth}
+                        <img src="./img/icons/heart.png" alt="life"/>  {this.props.game.player.currentHealth}/{this.props.game.player.maxHealth}
                         <span className="tooltip">Life</span>
                     </div>
                     <div className="img-container">
